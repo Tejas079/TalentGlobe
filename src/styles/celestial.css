@@ -363,3 +363,56 @@
   background: rgba(245, 158, 11, 0.15);
   border-color: #F59E0B;
 }
+
+/* --- Mobile Responsive Optimizations for Celestial Solar System ------------ */
+@media (max-width: 768px) {
+  .cosmic-mode-toggle {
+    top: 68px !important;
+    scale: 0.88;
+  }
+
+  .cosmic-toggle-btn {
+    padding: 6px 11px;
+    font-size: 10.5px;
+  }
+
+  .cinematic-tour-banner {
+    top: 112px !important;
+    padding: 6px 14px;
+    gap: 8px;
+  }
+
+  .tour-text {
+    font-size: 10px;
+  }
+
+  .celestial-showcase-card {
+    max-width: calc(100vw - 24px) !important;
+    padding: 16px 14px;
+    border-radius: 14px;
+  }
+
+  .celestial-body-title {
+    font-size: 17px;
+  }
+
+  .celestial-proj-name {
+    font-size: 15px;
+  }
+
+  .celestial-proj-tagline {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .celestial-actions-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .celestial-demo-btn, .celestial-claim-btn {
+    width: 100%;
+    padding: 9px;
+  }
+}
+

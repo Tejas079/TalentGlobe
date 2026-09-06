@@ -742,3 +742,60 @@
   max-width: 380px;
   margin: 0 auto;
 }
+
+/* --- Mobile optimizations for Info Modal & Showcase Tiers ----------------- */
+@media (max-width: 600px) {
+  .info-modal {
+    max-width: 100% !important;
+    padding: 20px 14px !important;
+  }
+  
+  .info-step {
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    padding: 11px 12px;
+  }
+
+  .info-step-index {
+    width: 22px;
+    height: 22px;
+    font-size: 10.5px;
+  }
+
+  .info-step-body {
+    flex: 1 1 calc(100% - 36px);
+  }
+
+  .info-step-title {
+    font-size: 13px;
+    display: inline-block;
+  }
+
+  .info-step-desc {
+    font-size: 11.5px;
+    line-height: 1.45;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  .info-step-price-wrap {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .info-price-strike {
+    font-size: 11px;
+  }
+
+  .info-price-free-tag {
+    font-size: 9.5px;
+    padding: 2px 7px;
+  }
+}
+

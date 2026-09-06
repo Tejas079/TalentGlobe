@@ -38,15 +38,22 @@ export function initHud() {
     });
   }
 
-  document.querySelectorAll('.nav-link').forEach(link => {
+  // Desktop & Mobile Navigation Links
+  document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const target = link.dataset.nav;
 
+      // Close mobile drawer on selection
+      const mobileDrawer = document.getElementById('mobile-nav-drawer');
+      const mobileToggle = document.getElementById('btn-mobile-nav');
+      if (mobileDrawer) mobileDrawer.classList.remove('active');
+      if (mobileToggle) mobileToggle.classList.remove('active');
+
       // Sign In opens a modal rather than navigating, so it should not take
       // over the active-section underline.
       if (target !== 'sign-in') {
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(l => l.classList.remove('active'));
         link.classList.add('active');
       }
 
@@ -75,6 +82,24 @@ export function initHud() {
       }
     });
   });
+
+  // Mobile navigation drawer toggle button
+  const mobileToggle = document.getElementById('btn-mobile-nav');
+  const mobileDrawer = document.getElementById('mobile-nav-drawer');
+  if (mobileToggle && mobileDrawer) {
+    mobileToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isActive = mobileDrawer.classList.toggle('active');
+      mobileToggle.classList.toggle('active', isActive);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!mobileDrawer.contains(e.target) && !mobileToggle.contains(e.target)) {
+        mobileDrawer.classList.remove('active');
+        mobileToggle.classList.remove('active');
+      }
+    });
+  }
 
   // Account menu entries
   const menuMyProjects = document.getElementById('menu-my-projects');

@@ -504,6 +504,88 @@
   transform: translateX(-50%) translateY(8px);
 }
 
+/* Mobile Hamburger Button & Drawer */
+.mobile-nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 4.5px;
+  width: 36px;
+  height: 36px;
+  padding: 8px 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 6px;
+}
+
+.hamburger-bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #F8FAFC;
+  border-radius: 2px;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+
+.mobile-nav-toggle.active .hamburger-bar:nth-child(1) {
+  transform: translateY(6.5px) rotate(45deg);
+}
+
+.mobile-nav-toggle.active .hamburger-bar:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-nav-toggle.active .hamburger-bar:nth-child(3) {
+  transform: translateY(-6.5px) rotate(-45deg);
+}
+
+.mobile-nav-drawer {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: rgba(10, 14, 24, 0.97);
+  border: 1.5px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.88), 0 0 24px rgba(245, 158, 11, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 8px;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 200;
+  animation: fadeInDown 0.22s ease;
+}
+
+.mobile-nav-drawer.active {
+  display: flex;
+}
+
+.mobile-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  color: #CBD5E1;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: all 0.18s ease;
+  cursor: pointer;
+}
+
+.mobile-nav-link:hover, .mobile-nav-link.active {
+  color: #F8FAFC;
+  background: rgba(245, 158, 11, 0.14);
+  border-left: 3px solid #F59E0B;
+}
+
 /* ==========================================================================
    RESPONSIVE DESIGN
    ========================================================================== */
@@ -512,7 +594,10 @@
     top: 10px;
     left: 10px;
     right: 10px;
-    padding: 0 14px;
+    padding: 0 12px;
+  }
+  .mobile-nav-toggle {
+    display: flex;
   }
   .nav-links {
     display: none;
@@ -521,22 +606,36 @@
     display: none;
   }
   .hero-banner {
-    top: 76px;
-    left: 16px;
-    right: 16px;
+    top: 116px;
+    left: 14px;
+    right: 14px;
     max-width: none;
   }
   .hero-headline {
-    font-size: 26px;
+    font-size: 24px;
+  }
+  .hero-subtitle {
+    font-size: 12px;
   }
   .search-discovery-panel {
     top: auto;
-    bottom: 120px;
-    right: 14px;
-    left: 14px;
+    bottom: 116px;
+    right: 12px;
+    left: 12px;
     width: auto;
   }
   .controls-hud {
     display: none;
   }
 }
+
+@media (max-width: 480px) {
+  .btn-advertise-nav {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  .brand-logo span:last-child {
+    font-size: 12px;
+  }
+}
+
