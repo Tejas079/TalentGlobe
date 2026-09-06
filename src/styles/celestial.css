@@ -198,11 +198,10 @@
 /* 4. Cosmic Celestial Modal Showcase */
 .celestial-showcase-card {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.96);
+  top: 0;
+  left: 0;
   width: 90%;
-  max-width: 440px;
+  max-width: 420px;
   background: rgba(10, 14, 24, 0.94);
   border: 1.5px solid rgba(245, 158, 11, 0.4);
   border-radius: 16px;
@@ -213,13 +212,14 @@
   color: #F8FAFC;
   opacity: 0;
   pointer-events: none;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translate3d(-9999px, -9999px, 0);
+  transition: opacity 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform, opacity;
 }
 
 .celestial-showcase-card.active {
   opacity: 1;
   pointer-events: auto;
-  transform: translate(-50%, -50%) scale(1);
 }
 
 .celestial-card-header {

@@ -95,6 +95,7 @@ const flyStartQuat = new THREE.Quaternion();
 const flyTargetQuat = new THREE.Quaternion();
 
 export function flyCameraToCoordinates(lat, lon, targetDistance = 205, onCompleteCallback = null) {
+  clearCelestialTracking();
   pauseAutoRotateTemporarily();
   const heroEl = document.getElementById('hero-banner');
   if (heroEl) heroEl.classList.add('collapsed');
@@ -130,6 +131,7 @@ export function flyCameraToCoordinates(lat, lon, targetDistance = 205, onComplet
       controls.target.set(0, 0, 0);
     },
     onComplete: () => {
+      cameraFlightTween = null;
       if (onCompleteCallback) onCompleteCallback();
     }
   });
@@ -153,8 +155,6 @@ export function flyCameraToCelestial(targetPos, lookAtPos = new THREE.Vector3(0,
   // Offset camera slightly backwards and upwards from target for a dramatic cinematic frame
   const offsetDir = targetPos.clone().sub(lookAtPos).normalize();
   if (offsetDir.lengthSq() < 0.001) offsetDir.set(0, 0.4, 1).normalize();
-  const endCamPos = targetPos.clone().add(offsetDir.multiplyScalar(distance));
-  endCamPos.y += distance * 0.22;
 
   const anim = { t: 0 };
   cameraFlightTween = gsap.to(anim, {
@@ -163,11 +163,15 @@ export function flyCameraToCelestial(targetPos, lookAtPos = new THREE.Vector3(0,
     ease: "power3.inOut",
     onUpdate: () => {
       const t = anim.t;
-      camera.position.lerpVectors(startCamPos, endCamPos, t);
+      const currentEndCam = targetPos.clone().add(offsetDir.clone().multiplyScalar(distance));
+      currentEndCam.y += distance * 0.22;
+      camera.position.lerpVectors(startCamPos, currentEndCam, t);
       controls.target.lerpVectors(startTarget, targetPos, t);
       camera.lookAt(controls.target);
     },
     onComplete: () => {
+      controls.target.copy(targetPos);
+      cameraFlightTween = null;
       if (onComplete) onComplete();
     }
   });
@@ -266,4 +270,37 @@ export function stopCinematicTour() {
     controls.autoRotate = true;
   }
 }
+
+/* ==========================================================================
+   Orbital Tracking Engine
+   Locks camera target onto moving planet while it revolves around orbit
+   ========================================================================== */
+let activeTrackingMesh = null;
+
+export function trackCelestialMesh(mesh) {
+  activeTrackingMesh = mesh;
+}
+
+export function clearCelestialTracking() {
+  activeTrackingMesh = null;
+  gsap.to(controls.target, {
+    x: 0,
+    y: 0,
+    z: 0,
+    duration: 1.2,
+    ease: "power2.out"
+  });
+}
+
+export function updateCelestialCameraTracking() {
+  if (!activeTrackingMesh || isCinematicTourActive) return;
+
+  // Track position delta of the orbiting planet
+  const targetWorldPos = activeTrackingMesh.position;
+  const deltaMove = targetWorldPos.clone().sub(controls.target);
+
+  controls.target.copy(targetWorldPos);
+  camera.position.add(deltaMove);
+}
+
 

@@ -20,8 +20,8 @@ import { initInfoModal } from './ui/info-modal.js';
 import { initMyProjects, render as renderMyProjects } from './ui/my-projects.js';
 import { initClaimModal } from './ui/claim-modal.js';
 import { celestialSystem } from './three/celestial-system.js';
-import { flyCameraToCelestial } from './three/camera-flight.js';
-import { initCelestialUI, openCelestialCard } from './ui/celestial-modal.js';
+import { flyCameraToCelestial, trackCelestialMesh, clearCelestialTracking, updateCelestialCameraTracking } from './three/camera-flight.js';
+import { initCelestialUI, openCelestialCard, closeCelestialCard, updateCelestialModalPosition } from './ui/celestial-modal.js';
 
 
 // 1. Mount WebGL Canvas
@@ -33,10 +33,12 @@ const markersContainer = document.getElementById('markers-container');
 initMarkerPool(
   markersContainer,
   (profile) => {
+    closeCelestialCard();
     setActiveSpotlightProfile(profile.id);
     openProfileCard(profile);
   },
   (cluster) => {
+    closeCelestialCard();
     pauseAutoRotateTemporarily();
     if (getActiveHighlightedCountry() === cluster.name) {
       clearCountryHighlight(clusterNodes);
@@ -138,9 +140,10 @@ initHud();
 celestialSystem.init(canvasContainer, (cfg, profile) => {
   const mesh = celestialSystem.getMeshByRank(cfg.rank);
   if (mesh) {
+    trackCelestialMesh(mesh);
     flyCameraToCelestial(mesh.position, new THREE.Vector3(0, 0, 0), cfg.size * 3.8 + 25, 1.6);
   }
-  openCelestialCard(cfg, profile);
+  openCelestialCard(cfg, profile, mesh);
 });
 
 initCelestialUI(celestialSystem);
@@ -158,14 +161,20 @@ function animate(currentTime) {
   const delta = currentTime - lastTime;
   lastTime = currentTime;
 
-  // Orbit controls
-  controls.update();
-
   // Atmospheric cloud drift
   updateAtmosphere();
 
   // Advance celestial solar system and planetary orbits
   celestialSystem.update(delta);
+
+  // Keep camera locked onto moving celestial body
+  updateCelestialCameraTracking();
+
+  // Orbit controls
+  controls.update();
+
+  // Dynamically update modal position, 3D tilt, and holographic tether
+  updateCelestialModalPosition(camera);
 
   // Project markers and handle occlusion
   renderPipeline();
