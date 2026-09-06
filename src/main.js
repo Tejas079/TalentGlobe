@@ -18,7 +18,7 @@ import { initSubmitModal, openSubmitModal, loadSavedCommunityProjects } from './
 import { initAuthModal } from './ui/auth-modal.js';
 import { initInfoModal } from './ui/info-modal.js';
 import { initMyProjects, render as renderMyProjects } from './ui/my-projects.js';
-import { initClaimModal } from './ui/claim-modal.js';
+import { initClaimModal, openClaimModal } from './ui/claim-modal.js';
 import { celestialSystem } from './three/celestial-system.js';
 import { flyCameraToCelestial, trackCelestialMesh, clearCelestialTracking, updateCelestialCameraTracking } from './three/camera-flight.js';
 import { initCelestialUI, openCelestialCard, closeCelestialCard, updateCelestialModalPosition } from './ui/celestial-modal.js';
@@ -115,7 +115,10 @@ initAuthModal({
 initProfileModal();
 initSearchFilters();
 initMyProjects();
-initInfoModal({ onSubmitProject: () => openSubmitModal() });
+initInfoModal({ 
+  onSubmitProject: () => openSubmitModal(),
+  onClaimSpotlight: (targetBody) => openClaimModal(targetBody)
+});
 initSubmitModal({
   openProfileCard,
   flyCameraToCoordinates,

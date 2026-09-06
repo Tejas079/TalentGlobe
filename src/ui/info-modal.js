@@ -1,8 +1,9 @@
-// Backs the "How It Works" and "Spotlights" nav links, which previously only
-// fired a toast that scrolled away before it could be read.
+// Backs the "How It Works" and "Spotlights" nav links
 
 let backdrop = null;
-let onPrimaryAction = null;
+let onSubmitAction = null;
+let onClaimAction = null;
+let activeModalKey = null;
 
 const CONTENT = {
   'how-it-works': {
@@ -10,37 +11,70 @@ const CONTENT = {
     heading: 'Three steps to the globe',
     desc: 'From an empty form to a discoverable pin, in about a minute.',
     cta: '🚀 Submit Your Project',
+    actionType: 'submit',
     steps: [
       {
         title: 'Pin your coordinates',
-        desc: 'Type your city and country. We geocode it and drop your marker at the real latitude and longitude.'
+        desc: 'Type your city and country. We geocode it and drop your marker at the real latitude and longitude.',
+        action: 'submit'
       },
       {
         title: 'Add your build',
-        desc: 'Project name, one-line pitch, tech stack, a live demo or repo link, and a headline metric.'
+        desc: 'Project name, one-line pitch, tech stack, a live demo or repo link, and a headline metric.',
+        action: 'submit'
       },
       {
         title: 'Get discovered',
-        desc: 'Your pin is searchable by project, stack, city and country — and you can edit it from My Projects any time.'
+        desc: 'Your pin is searchable by project, stack, city and country — and you can edit it from My Projects any time.',
+        action: 'submit'
       }
     ]
   },
   spotlights: {
-    badge: 'SPOTLIGHT TIERS',
+    badge: 'CELESTIAL & SPOTLIGHT TIERS',
     heading: 'Showcase tiers',
-    desc: 'Every pin is free. Paid tiers buy placement, not access.',
-    cta: '🚀 Submit Your Project',
+    desc: 'Every pin on Earth is 100% free. Paid tiers unlock premier placement, spotlight dock rotation, and celestial planet real estate.',
+    cta: '👑 Claim Planet / Spotlight Spot',
+    actionType: 'claim',
     steps: [
-      { title: 'Free Maker', desc: 'Your pin on the globe, searchable and editable.', price: '₹0' },
-      { title: 'Verified', desc: 'Verified badge on your card and priority in search results.', price: '₹99' },
-      { title: 'Featured', desc: 'Larger marker with a persistent name label at mid zoom.', price: '₹499' },
-      { title: 'Trending', desc: 'Rotation through the Front of Globe spotlight dock.', price: '₹1,999' },
-      { title: 'Global Spotlight', desc: 'Ranked beacon stalk visible from full orbit distance.', price: '₹9,999' }
+      { 
+        title: 'Free Maker', 
+        desc: 'Your pin on the 3D globe, searchable by stack, city, and country.', 
+        price: '₹0',
+        action: 'submit'
+      },
+      { 
+        title: 'Verified', 
+        desc: 'Verified gold badge on your profile card and priority in search results.', 
+        price: '₹99',
+        action: 'claim'
+      },
+      { 
+        title: 'Featured Marker', 
+        desc: 'Larger illuminated pulsing marker with a persistent name label on the globe.', 
+        price: '₹499',
+        action: 'claim'
+      },
+      { 
+        title: 'Trending Spotlight', 
+        desc: 'Guaranteed rotation through the Front of Globe spotlight dock carousel.', 
+        price: '₹1,999',
+        action: 'claim'
+      },
+      { 
+        title: '👑 Celestial VIP Planet & The Sun', 
+        desc: 'Own a 1-of-1 Planet (The Sun, Jupiter, Saturn) in the 3D Solar System with orbital camera tracking, laser tether & dedicated showcase.', 
+        price: 'from ₹2,499',
+        isVip: true,
+        action: 'claim',
+        planet: 'sun'
+      }
     ]
   }
 };
 
 export function openInfoModal(key) {
+  activeModalKey = key;
   const content = CONTENT[key];
   if (!backdrop || !content) return;
 
@@ -59,7 +93,7 @@ export function openInfoModal(key) {
     body.innerHTML = '';
     content.steps.forEach((step, i) => {
       const row = document.createElement('div');
-      row.className = 'info-step';
+      row.className = 'info-step clickable' + (step.isVip ? ' celestial-vip' : '');
 
       const index = document.createElement('span');
       index.className = 'info-step-index';
@@ -86,6 +120,15 @@ export function openInfoModal(key) {
         row.appendChild(price);
       }
 
+      row.addEventListener('click', () => {
+        closeInfoModal();
+        if (step.action === 'claim') {
+          if (onClaimAction) onClaimAction(step.planet || null);
+        } else {
+          if (onSubmitAction) onSubmitAction();
+        }
+      });
+
       body.appendChild(row);
     });
   }
@@ -100,8 +143,9 @@ export function closeInfoModal() {
   document.body.style.overflow = '';
 }
 
-export function initInfoModal({ onSubmitProject } = {}) {
-  onPrimaryAction = onSubmitProject;
+export function initInfoModal({ onSubmitProject, onClaimSpotlight } = {}) {
+  onSubmitAction = onSubmitProject;
+  onClaimAction = onClaimSpotlight;
   backdrop = document.getElementById('info-modal-backdrop');
 
   const closeBtn = document.getElementById('btn-close-info');
@@ -113,7 +157,12 @@ export function initInfoModal({ onSubmitProject } = {}) {
   if (cta) {
     cta.addEventListener('click', () => {
       closeInfoModal();
-      if (onPrimaryAction) onPrimaryAction();
+      const currentContent = CONTENT[activeModalKey];
+      if (currentContent?.actionType === 'claim' && onClaimAction) {
+        onClaimAction();
+      } else if (onSubmitAction) {
+        onSubmitAction();
+      }
     });
   }
 
