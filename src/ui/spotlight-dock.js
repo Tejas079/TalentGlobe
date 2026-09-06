@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { camera } from '../three/scene.js';
 import { tier5Profiles } from '../three/markers.js';
 import { flyCameraToCoordinates } from '../three/camera-flight.js';
+import { openClaimModal } from './claim-modal.js';
 
 const spotlightCarousel = document.getElementById('spotlight-carousel');
 const spotlightDock = document.getElementById('spotlight-dock');
@@ -61,8 +62,10 @@ export function updateDynamicSpotlights(onSelectProfile) {
     const cards = spotlightCarousel.querySelectorAll('.spotlight-card-item');
     cards.forEach(c => {
       const pid = parseInt(c.dataset.profileId, 10);
-      c.classList.toggle('is-offview', !liveSet.has(pid));
-      c.classList.toggle('active', pid === activeProfileId);
+      if (pid) {
+        c.classList.toggle('is-offview', !liveSet.has(pid));
+        c.classList.toggle('active', pid === activeProfileId);
+      }
     });
     return;
   }
@@ -71,6 +74,27 @@ export function updateDynamicSpotlights(onSelectProfile) {
   spotlightCarousel.innerHTML = '';
   const live = new Set(inView.map(p => p.id));
   display.forEach(p => appendSpotlightCard(p, live.has(p.id), onSelectProfile));
+  appendClaimCard();
+}
+
+function appendClaimCard() {
+  const card = document.createElement('div');
+  card.className = 'spotlight-card-item claim-spotlight-card';
+  card.innerHTML = `
+    <div class="spotlight-avatar claim-avatar">👑</div>
+    <div class="spotlight-meta">
+      <span class="spotlight-rank-tag vip-tag">★ SPOT #1 OPEN</span>
+      <span class="spotlight-name">Claim The Gold Spot</span>
+      <span class="spotlight-city">Instant UPI & Card • 50k+ Views</span>
+    </div>
+  `;
+  card.title = 'Click to Claim #1 Gold Spotlight with Instant UPI or Card';
+  card.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    openClaimModal();
+  });
+  spotlightCarousel.appendChild(card);
 }
 
 function appendSpotlightCard(p, isLive, onSelectProfile) {

@@ -136,6 +136,13 @@
     </div>
   </aside>
 
+  <!-- Floating Quick Claim Pill -->
+  <div class="floating-claim-pill" id="floating-claim-pill">
+    <span class="pill-dot"></span>
+    <span>Want your project at #1?</span>
+    <button class="pill-claim-btn" id="btn-claim-pill">Claim Spot 👑</button>
+  </div>
+
   <!-- Front of Globe • Live Spotlight Dock -->
   <section class="spotlight-dock" id="spotlight-dock">
     <div class="spotlight-dock-header">
@@ -143,7 +150,12 @@
         <span class="live-dot"></span>
         <span>Front of Globe • 20 Featured Projects</span>
       </div>
-      <div class="spotlight-dock-desc">Active builds in your current view</div>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="btn-claim-spotlight" id="btn-claim-spotlight">
+          <span>👑</span> Claim #1 Spot
+        </button>
+        <div class="spotlight-dock-desc">Active builds in your current view</div>
+      </div>
     </div>
     <div class="spotlight-carousel" id="spotlight-carousel">
       <!-- Injected dynamically based on camera-facing Tier 5 profiles -->
@@ -418,6 +430,181 @@
         <button type="button" class="sub-btn-secondary" id="btn-info-dismiss">Close</button>
         <button type="button" class="sub-btn-primary" id="btn-info-cta">🚀 Submit Your Project</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Claim #1 Gold Spotlight Modal (Instant UPI / Card) -->
+  <div class="submit-modal-backdrop" id="claim-modal-backdrop">
+    <div class="submit-modal claim-modal" role="dialog" aria-modal="true" aria-labelledby="claim-heading">
+      <div class="submit-modal-header">
+        <div>
+          <span class="sub-badge gold-vip-badge">★ FRONT OF GLOBE VIP</span>
+          <h2 id="claim-heading" class="sub-title">👑 Claim #1 Gold Spotlight</h2>
+          <p class="sub-desc">Place your project at Position #1 on the 3D globe with a permanent gold laser beacon.</p>
+        </div>
+        <button class="submit-close-btn" id="btn-close-claim" aria-label="Close claim modal">✕</button>
+      </div>
+
+      <!-- Spotlight VIP Perks Banner -->
+      <div class="claim-perks-banner">
+        <div class="perk-item">
+          <span class="perk-icon">⚡</span>
+          <div class="perk-text">
+            <strong>#1 Rank in Spotlight Dock</strong>
+            <span>First card seen by everyone exploring the globe</span>
+          </div>
+        </div>
+        <div class="perk-item">
+          <span class="perk-icon">🌟</span>
+          <div class="perk-text">
+            <strong>Golden Sky Laser Beacon</strong>
+            <span>3D light beam visible from global orbit</span>
+          </div>
+        </div>
+        <div class="perk-item">
+          <span class="perk-icon">🎯</span>
+          <div class="perk-text">
+            <strong>Direct Investor Reach</strong>
+            <span>One-click Live Demo & Hire/Contact buttons</span>
+          </div>
+        </div>
+      </div>
+
+      <form id="claim-spotlight-form" class="submit-form">
+        <div class="form-section-title">01. Flagship Project Details</div>
+        
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="claim-title">Project / Company Name *</label>
+            <input type="text" id="claim-title" placeholder="e.g. HyperFlow AI" required maxlength="40" />
+          </div>
+          <div class="form-group flex-1">
+            <label for="claim-category">Category *</label>
+            <select id="claim-category" required>
+              <option value="AI & Agents">AI & Agents</option>
+              <option value="DevTools" selected>DevTools</option>
+              <option value="SaaS & B2B">SaaS & B2B</option>
+              <option value="Systems & Rust">Systems & Rust</option>
+              <option value="Creative & 3D">Creative & 3D</option>
+              <option value="Fintech">Fintech</option>
+              <option value="Open Source">Open Source</option>
+              <option value="Mobile & Web">Mobile & Web</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+              <option value="Climate Tech">Climate Tech</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="claim-tagline">One-line Value Pitch *</label>
+            <input type="text" id="claim-tagline" placeholder="e.g. High-throughput payment settlement engine handling 40M+ tx" required maxlength="120" />
+          </div>
+          <div class="form-group flex-1">
+            <label for="claim-metric">Key Metric / Badge</label>
+            <input type="text" id="claim-metric" placeholder="e.g. 40M+ daily tx / YC W24" maxlength="30" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="claim-maker-name">Founder / Maker Name *</label>
+            <input type="text" id="claim-maker-name" placeholder="e.g. Alex Rivera" required maxlength="40" />
+          </div>
+          <div class="form-group flex-1">
+            <label for="claim-email">Contact Email / X Handle *</label>
+            <input type="text" id="claim-email" placeholder="you@domain.com or @handle" required />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="claim-city">City *</label>
+            <input type="text" id="claim-city" placeholder="e.g. Bengaluru" required />
+          </div>
+          <div class="form-group flex-1">
+            <label for="claim-country">Country *</label>
+            <input type="text" id="claim-country" placeholder="e.g. India" required />
+          </div>
+          <div class="form-group flex-1">
+            <label for="claim-demo">Demo / Website URL</label>
+            <input type="url" id="claim-demo" placeholder="https://github.com/you/project" />
+          </div>
+        </div>
+
+        <div class="form-section-title">02. Instant Checkout • ₹9,999 (~$119)</div>
+
+        <!-- Payment Method Tabs -->
+        <div class="payment-tabs" role="tablist">
+          <button type="button" class="payment-tab active" id="tab-pay-upi" role="tab">
+            <span>📱</span> UPI (GPay / PhonePe / Paytm / BHIM)
+          </button>
+          <button type="button" class="payment-tab" id="tab-pay-card" role="tab">
+            <span>💳</span> Credit / Debit Card
+          </button>
+        </div>
+
+        <!-- UPI Pane -->
+        <div class="payment-pane active" id="pane-pay-upi">
+          <div class="upi-checkout-box">
+            <div class="upi-qr-card">
+              <div class="upi-qr-code" id="upi-qr-code">
+                <!-- Injected via claim-modal.js -->
+              </div>
+              <span class="qr-scan-hint">Scan with GPay, PhonePe, Paytm, BHIM or Cred</span>
+            </div>
+            <div class="upi-details">
+              <div class="upi-amount-row">
+                <span class="amount-label">Spotlight Amount:</span>
+                <span class="amount-val">₹9,999 <span class="tax-tag">incl. taxes</span></span>
+              </div>
+              <div class="upi-id-box">
+                <span class="upi-id-label">UPI ID:</span>
+                <code class="upi-id-code" id="upi-id-text">talentglobe@upi</code>
+                <button type="button" class="btn-copy-upi" id="btn-copy-upi">Copy</button>
+              </div>
+              <div class="form-group" style="margin-top: 6px;">
+                <label for="claim-utr" style="font-size: 11px; color: var(--accent-cool);">Transaction Ref / UTR (Optional for instant auto-verify):</label>
+                <input type="text" id="claim-utr" placeholder="12-digit UPI UTR" maxlength="16" />
+              </div>
+              <a href="upi://pay?pa=talentglobe@upi&pn=TalentGlobe&am=9999&cu=INR&tn=Spotlight-Rank1" class="btn-upi-intent" id="btn-upi-intent">
+                📱 Open UPI App to Pay ₹9,999
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Pane -->
+        <div class="payment-pane" id="pane-pay-card">
+          <div class="card-checkout-box">
+            <div class="form-group">
+              <label for="claim-card-num">Card Number</label>
+              <div class="card-input-wrap">
+                <input type="text" id="claim-card-num" placeholder="4242 •••• •••• 4242" maxlength="19" />
+                <span class="card-brand-badge" id="card-brand-badge">💳</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="claim-card-exp">Expiry (MM/YY)</label>
+                <input type="text" id="claim-card-exp" placeholder="MM/YY" maxlength="5" />
+              </div>
+              <div class="form-group flex-1">
+                <label for="claim-card-cvc">CVC / CVV</label>
+                <input type="text" id="claim-card-cvc" placeholder="123" maxlength="4" />
+              </div>
+            </div>
+            <div class="card-secure-hint">🔒 256-bit encrypted secure checkout</div>
+          </div>
+        </div>
+
+        <div class="submit-form-actions" style="margin-top: 16px;">
+          <button type="button" class="sub-btn-secondary" id="btn-cancel-claim">Cancel</button>
+          <button type="submit" class="sub-btn-primary gold-glow-btn" id="btn-confirm-claim">
+            ⚡ Pay ₹9,999 & Claim #1 Spot
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 

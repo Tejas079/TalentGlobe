@@ -1,6 +1,6 @@
 import { gsap } from 'gsap';
 import { showToast } from './toast.js';
-import { flyCameraToCoordinates } from '../three/camera-flight.js';
+import { flyCameraToCoordinates, setProfileSelected } from '../three/camera-flight.js';
 import { canEditProfile } from '../api/ownership.js';
 import { openSubmitModal } from './submit-modal.js';
 import { setSelectedGlobeProfileId } from '../three/markers.js';
@@ -46,6 +46,9 @@ export function openProfileCard(p) {
   // Sync selected pin beacon on globe & spotlight carousel
   setSelectedGlobeProfileId(p.id);
   setActiveSpotlightProfile(p.id);
+
+  // Stop globe rotation while spotlight is actively viewed
+  setProfileSelected(true);
 
   const project = p.project || {};
 
@@ -218,6 +221,9 @@ export function closeProfileCard() {
   // Clear selected pin beacon on globe & dock highlight
   setSelectedGlobeProfileId(null);
   setActiveSpotlightProfile(null);
+
+  // Resume globe rotation when selection is dismissed
+  setProfileSelected(false);
 
   gsap.killTweensOf(profileCardModal);
   gsap.to(profileCardModal, {

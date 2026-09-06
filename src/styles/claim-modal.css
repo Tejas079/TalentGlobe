@@ -1,0 +1,430 @@
+/* ==========================================================================
+   CLAIM GOLD SPOTLIGHT MODAL & CHECKOUT STYLING
+   ========================================================================== */
+
+.claim-modal {
+  max-width: 640px !important;
+  border: 1px solid rgba(245, 158, 11, 0.45) !important;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.95), 0 0 50px rgba(245, 158, 11, 0.22) !important;
+}
+
+.gold-vip-badge {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.15) 100%) !important;
+  border: 1px solid #F59E0B !important;
+  color: #FDE68A !important;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+}
+
+/* Perks Highlight Banner */
+.claim-perks-banner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background: rgba(18, 14, 8, 0.7);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 600px) {
+  .claim-perks-banner {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+.perk-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.perk-icon {
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.perk-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.perk-text strong {
+  font-size: 11.5px;
+  color: #FFFBEB;
+  font-weight: 700;
+}
+
+.perk-text span {
+  font-size: 10px;
+  color: var(--accent-cool);
+  line-height: 1.3;
+}
+
+/* Payment Switcher Tabs */
+.payment-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.payment-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(18, 22, 32, 0.85);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  color: var(--accent-cool-bright);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out-spring);
+}
+
+.payment-tab:hover {
+  border-color: rgba(245, 158, 11, 0.4);
+  background: rgba(26, 32, 46, 0.95);
+}
+
+.payment-tab.active {
+  background: linear-gradient(135deg, rgba(42, 32, 14, 0.95) 0%, rgba(26, 20, 10, 0.95) 100%);
+  border-color: #F59E0B;
+  color: #FFFFFF;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.25);
+}
+
+.payment-pane {
+  display: none;
+  animation: pane-fade 0.24s var(--ease-out-spring);
+}
+
+.payment-pane.active {
+  display: block;
+}
+
+@keyframes pane-fade {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* UPI Checkout Box */
+.upi-checkout-box {
+  display: flex;
+  gap: 16px;
+  background: rgba(12, 15, 22, 0.9);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  align-items: center;
+}
+
+@media (max-width: 540px) {
+  .upi-checkout-box {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.upi-qr-card {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.upi-qr-code {
+  width: 120px;
+  height: 120px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+}
+
+.qr-scan-hint {
+  font-size: 9px;
+  color: var(--accent-cool);
+  max-width: 120px;
+  text-align: center;
+  line-height: 1.25;
+}
+
+.upi-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.upi-amount-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.amount-label {
+  font-size: 11.5px;
+  color: var(--accent-cool);
+}
+
+.amount-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: #F59E0B;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+.tax-tag {
+  font-size: 10px;
+  font-weight: normal;
+  color: var(--accent-cool);
+}
+
+.upi-id-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(22, 28, 42, 0.95);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+}
+
+.upi-id-label {
+  font-size: 11px;
+  color: var(--accent-cool);
+}
+
+.upi-id-code {
+  flex: 1;
+  font-size: 12px;
+  font-family: monospace;
+  color: #FDE68A;
+  font-weight: 700;
+}
+
+.btn-copy-upi {
+  padding: 3px 8px;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #F59E0B;
+  border-radius: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-copy-upi:hover {
+  background: #F59E0B;
+  color: #0A0A0C;
+}
+
+.btn-upi-intent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(217, 119, 6, 0.2) 100%);
+  border: 1px solid #F59E0B;
+  border-radius: var(--radius-sm);
+  color: #FDE68A;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.btn-upi-intent:hover {
+  background: #F59E0B;
+  color: #0A0A0C;
+}
+
+/* Card Checkout Box */
+.card-checkout-box {
+  background: rgba(12, 15, 22, 0.9);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.card-input-wrap input {
+  width: 100%;
+  padding-right: 42px !important;
+}
+
+.card-brand-badge {
+  position: absolute;
+  right: 12px;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+.card-secure-hint {
+  font-size: 10.5px;
+  color: var(--accent-cool);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Gold Glow Submit Button */
+.gold-glow-btn {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+  color: #0A0A0C !important;
+  font-weight: 800 !important;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.55), 0 4px 14px rgba(0, 0, 0, 0.6) !important;
+  border: none !important;
+}
+
+.gold-glow-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 0 35px rgba(245, 158, 11, 0.8), 0 6px 18px rgba(0, 0, 0, 0.7) !important;
+}
+
+/* ==========================================================================
+   SPOTLIGHT DOCK CLAIM AFFORDANCES
+   ========================================================================== */
+
+/* Button in dock header */
+.btn-claim-spotlight {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(217, 119, 6, 0.18) 100%);
+  border: 1px solid #F59E0B;
+  border-radius: var(--radius-full);
+  color: #FDE68A;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.28);
+  transition: all 0.2s var(--ease-out-spring);
+}
+
+.btn-claim-spotlight:hover {
+  background: #F59E0B;
+  color: #0A0A0C;
+  transform: translateY(-1px) scale(1.04);
+  box-shadow: 0 0 22px rgba(245, 158, 11, 0.6);
+}
+
+/* VIP Card in Carousel */
+.spotlight-card-item.claim-spotlight-card {
+  background: linear-gradient(135deg, rgba(34, 26, 12, 0.95) 0%, rgba(18, 14, 8, 0.95) 100%) !important;
+  border: 1.5px dashed #F59E0B !important;
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.25);
+}
+
+.spotlight-card-item.claim-spotlight-card:hover {
+  border-style: solid !important;
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 0 28px rgba(245, 158, 11, 0.55) !important;
+}
+
+.claim-avatar {
+  background: radial-gradient(circle at 30% 30%, #F59E0B, #B45309) !important;
+  color: #0A0A0C !important;
+  font-size: 15px !important;
+  border-color: #FFFBEB !important;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.6) !important;
+  animation: pulse-claim-avatar 2s infinite ease-in-out;
+}
+
+@keyframes pulse-claim-avatar {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); box-shadow: 0 0 20px #F59E0B; }
+}
+
+.vip-tag {
+  color: #F59E0B !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em;
+}
+
+/* Floating Teaser Pill above Dock */
+.floating-claim-pill {
+  position: absolute;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(16, 20, 30, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: var(--radius-full);
+  z-index: calc(var(--z-dock) - 1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.7), 0 0 16px rgba(245, 158, 11, 0.15);
+  animation: float-gentle 3.2s infinite ease-in-out;
+  pointer-events: auto;
+  transition: all 0.2s ease;
+}
+
+@keyframes float-gentle {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-4px); }
+}
+
+.pill-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #F59E0B;
+  box-shadow: 0 0 8px #F59E0B;
+  animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.floating-claim-pill span {
+  font-size: 11.5px;
+  color: #E2E8F0;
+  font-weight: 500;
+}
+
+.pill-claim-btn {
+  padding: 3px 9px;
+  background: #F59E0B;
+  color: #0A0A0C;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pill-claim-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 0 12px #F59E0B;
+}

@@ -133,7 +133,23 @@ export function initHud() {
     });
   }
 
-  renderer.domElement.addEventListener('pointerdown', collapseHero);
+  let downX = 0;
+  let downY = 0;
+
+  renderer.domElement.addEventListener('pointerdown', (e) => {
+    downX = e.clientX;
+    downY = e.clientY;
+    collapseHero();
+  });
+
+  renderer.domElement.addEventListener('pointerup', (e) => {
+    const dist = Math.hypot(e.clientX - downX, e.clientY - downY);
+    if (dist < 6) {
+      // Clean click/tap on globe background: dismiss open spotlight
+      closeProfileCard();
+    }
+  });
+
   renderer.domElement.addEventListener('wheel', collapseHero, { passive: true });
   renderer.domElement.addEventListener('touchstart', collapseHero, { passive: true });
   if (btnZoomIn) btnZoomIn.addEventListener('click', collapseHero);

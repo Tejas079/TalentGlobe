@@ -18,6 +18,7 @@ import { initSubmitModal, openSubmitModal, loadSavedCommunityProjects } from './
 import { initAuthModal } from './ui/auth-modal.js';
 import { initInfoModal } from './ui/info-modal.js';
 import { initMyProjects, render as renderMyProjects } from './ui/my-projects.js';
+import { initClaimModal } from './ui/claim-modal.js';
 
 
 // 1. Mount WebGL Canvas
@@ -116,6 +117,15 @@ initSubmitModal({
   onChange: () => {
     renderMyProjects();
     refreshFilters();
+  }
+});
+initClaimModal({
+  openProfileCard,
+  flyCameraToCoordinates,
+  onProjectsChanged: () => {
+    renderMyProjects();
+    refreshFilters();
+    updateDynamicSpotlights((profile) => openProfileCard(profile));
   }
 });
 initHud();

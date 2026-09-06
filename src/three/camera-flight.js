@@ -21,33 +21,52 @@ let idleTimer = null;
 // rotation four seconds after any drag, overriding an explicit opt-out and
 // leaving the HUD button showing a state nobody asked for.
 let autoRotateEnabledByUser = true;
+let isProfileSelected = false;
 
 export function isAutoRotateEnabledByUser() {
   return autoRotateEnabledByUser;
+}
+
+export function isProfileSelectedState() {
+  return isProfileSelected;
+}
+
+/**
+ * Locks or unlocks rotation when a gold spotlight/profile is selected.
+ * When a profile is selected, rotation stays completely stopped until closed/deselected.
+ */
+export function setProfileSelected(selected) {
+  isProfileSelected = Boolean(selected);
+  clearTimeout(idleTimer);
+  if (isProfileSelected) {
+    controls.autoRotate = false;
+  } else if (autoRotateEnabledByUser) {
+    controls.autoRotate = true;
+  }
 }
 
 /** Called by the HUD toggle. Returns the new user-intended state. */
 export function setAutoRotateEnabled(enabled) {
   autoRotateEnabledByUser = Boolean(enabled);
   clearTimeout(idleTimer);
-  controls.autoRotate = autoRotateEnabledByUser;
+  if (!isProfileSelected) {
+    controls.autoRotate = autoRotateEnabledByUser;
+  }
   return autoRotateEnabledByUser;
 }
 
 /**
- * Stops the globe while the user is interacting, resuming 4s later. The HUD
- * button is deliberately left alone: it indicates the user's choice, not this
- * momentary pause. Toggling the class here made a drag flip the indicator, so
- * the next click on the button appeared to do nothing.
+ * Stops the globe while the user is interacting, resuming 4s later (only if no profile is selected).
  */
 export function pauseAutoRotateTemporarily() {
   clearTimeout(idleTimer);
   controls.autoRotate = false;
 
-  if (!autoRotateEnabledByUser) return;
+  // Never resume if a spotlight project is currently selected!
+  if (isProfileSelected || !autoRotateEnabledByUser) return;
 
   idleTimer = setTimeout(() => {
-    if (!autoRotateEnabledByUser) return;
+    if (isProfileSelected || !autoRotateEnabledByUser) return;
     controls.autoRotate = true;
   }, 4000);
 }
