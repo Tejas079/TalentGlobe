@@ -58,13 +58,13 @@ export function updateDynamicSpotlights(onSelectProfile) {
   const key = display.map(p => p.id).join(',');
   if (key === lastSpotlightTopIds) {
     // Just sync is-offview and active classes without wiping DOM
-    const liveSet = new Set(inView.map(p => p.id));
+    const liveSet = new Set(inView.map(p => String(p.id)));
     const cards = spotlightCarousel.querySelectorAll('.spotlight-card-item');
     cards.forEach(c => {
-      const pid = parseInt(c.dataset.profileId, 10);
+      const pid = c.dataset.profileId;
       if (pid) {
         c.classList.toggle('is-offview', !liveSet.has(pid));
-        c.classList.toggle('active', pid === activeProfileId);
+        c.classList.toggle('active', pid === String(activeProfileId));
       }
     });
     return;

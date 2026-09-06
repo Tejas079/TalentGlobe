@@ -73,6 +73,14 @@ function splitStack(value, fallback) {
 
 function mapDatabaseRowToProfile(row) {
   const stack = splitStack(row.tech_stack, ['Full-Stack']);
+  const isTier5 = row.tier === 5 ||
+    (typeof row.project_metric === 'string' && row.project_metric.includes('#1')) ||
+    (typeof row.project_badge === 'string' && row.project_badge.includes('Spotlight #1')) ||
+    (typeof row.role === 'string' && row.role.startsWith('Founder & Creator'));
+
+  const tier = isTier5 ? 5 : (row.tier || 4);
+  const spotlightRank = isTier5 ? (row.spotlight_rank || 1) : null;
+
   return {
     id: `remote-${row.id}`,
     remoteId: row.id,
@@ -81,34 +89,36 @@ function mapDatabaseRowToProfile(row) {
     initials: row.name
       ? row.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
       : 'MK',
-    title: row.role || 'Maker & Builder',
-    category: 'Developer',
+    title: row.role || (isTier5 ? `Founder & Creator of ${row.project_title}` : 'Maker & Builder'),
+    category: isTier5 ? (row.project_category || 'Developer') : 'Developer',
     projectCategory: row.project_category || 'DevTools',
     city: row.city,
     country: row.country,
     region: row.country,
     lat: parseFloat(row.lat),
     lon: parseFloat(row.lon),
-    tier: 4,
-    tierName: 'Community Spotlight',
+    tier,
+    tierName: tier === 5 ? '₹9,999 Front of Globe' : 'Community Spotlight',
+    spotlightRank,
     skills: stack,
-    experience: row.experience || '3 years',
+    experience: row.experience || (isTier5 ? 'Founder' : '3 years'),
     availability: row.availability || 'AVAILABLE FOR OPPORTUNITIES',
-    impressions: '1.2k impressions',
+    impressions: tier === 5 ? '52.4k impressions' : '1.2k impressions',
     pitch: row.project_tagline || '',
     contactEmail: row.contact_email || '',
     project: {
       title: row.project_title,
       tagline: row.project_tagline,
       techStack: stack,
-      metric: row.project_metric || 'Active Build',
-      badge: row.project_badge || 'Community',
+      metric: row.project_metric || (tier === 5 ? '★ Spotlight #1' : 'Active Build'),
+      badge: row.project_badge || (tier === 5 ? '👑 Gold Spotlight #1' : 'Community'),
       demoUrl: row.project_demo_url || ''
     }
   };
 }
 
 function profileToRow(profile, userId) {
+  const isTier5 = profile.tier === 5 || profile.spotlightRank === 1;
   return {
     user_id: userId,
     name: profile.name,
@@ -121,8 +131,8 @@ function profileToRow(profile, userId) {
     project_tagline: profile.project.tagline,
     project_category: profile.projectCategory,
     project_demo_url: profile.project.demoUrl,
-    project_metric: profile.project.metric,
-    project_badge: profile.project.badge,
+    project_metric: isTier5 ? (profile.project.metric || '★ Spotlight #1') : (profile.project.metric || 'Active Build'),
+    project_badge: isTier5 ? (profile.project.badge || '👑 Gold Spotlight #1') : (profile.project.badge || 'Community'),
     tech_stack: profile.skills,
     experience: profile.experience,
     availability: profile.availability,

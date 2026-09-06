@@ -1,7 +1,7 @@
 import { geocodeLocation } from '../api/geocoding.js';
 import { saveProject, updateProject, loadCommunityProjects } from '../api/supabase.js';
 import { isSignedIn } from '../api/auth.js';
-import { registerNewProfile, refreshProfileGeometry, invalidateProfileRender } from '../three/markers.js';
+import { registerNewProfile, registerTier5Profile, refreshProfileGeometry, invalidateProfileRender } from '../three/markers.js';
 import { showToast } from './toast.js';
 import { openAuthModal } from './auth-modal.js';
 
@@ -185,7 +185,13 @@ function formatCoords(lat, lon) {
 export async function loadSavedCommunityProjects() {
   try {
     const projects = await loadCommunityProjects();
-    projects.forEach(p => registerNewProfile(p));
+    projects.forEach(p => {
+      if (p.tier === 5 || p.spotlightRank === 1) {
+        registerTier5Profile(p);
+      } else {
+        registerNewProfile(p);
+      }
+    });
     if (projects.length) {
       console.log(`[Community] Mounted ${projects.length} community projects on the 3D globe.`);
     }

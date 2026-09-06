@@ -117,6 +117,7 @@ initSubmitModal({
   onChange: () => {
     renderMyProjects();
     refreshFilters();
+    updateDynamicSpotlights((profile) => openProfileCard(profile));
   }
 });
 initClaimModal({

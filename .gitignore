@@ -22,3 +22,9 @@ Thumbs.db
 
 # Vercel
 .vercel
+
+# Ad media & generation artifacts
+*.mp4
+*.mp3
+*.jpg
+generate_free_ad.py
