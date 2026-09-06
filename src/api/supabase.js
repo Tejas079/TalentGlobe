@@ -38,13 +38,20 @@ function writeLocal(list) {
   }
 }
 
-function upsertLocal(profile) {
+/**
+ * Writes the local mirror. `dirty` marks a record whose latest state has not
+ * reached the server yet — loadCommunityProjects prefers those over the stale
+ * remote row, so a failed sync is never silently reverted.
+ */
+function upsertLocal(profile, { dirty = true } = {}) {
   const list = readLocal();
+  const record = { ...profile, _dirty: dirty };
   const idx = list.findIndex(p => p.id === profile.id
     || (profile.remoteId && p.remoteId === profile.remoteId));
-  if (idx >= 0) list[idx] = profile;
-  else list.unshift(profile);
+  if (idx >= 0) list[idx] = record;
+  else list.unshift(record);
   writeLocal(list);
+  return record;
 }
 
 function removeLocal(profile) {
@@ -182,8 +189,15 @@ export async function loadCommunityProjects() {
 
     const remote = (await res.json()).map(mapDatabaseRowToProfile);
     const remoteIds = new Set(remote.map(p => String(p.remoteId)));
-    const unsynced = local.filter(p => !p.remoteId || !remoteIds.has(String(p.remoteId)));
-    return [...remote, ...unsynced];
+    const dirtyByRemoteId = new Map(
+      local.filter(p => p.remoteId && p._dirty).map(p => [String(p.remoteId), p])
+    );
+
+    // An edit that never reached the server must not be overwritten by the
+    // stale row it was meant to replace.
+    const reconciled = remote.map(r => dirtyByRemoteId.get(String(r.remoteId)) || r);
+    const neverSynced = local.filter(p => !p.remoteId || !remoteIds.has(String(p.remoteId)));
+    return [...reconciled, ...neverSynced];
   } catch (err) {
     console.warn('[Supabase] Network error, showing local projects only:', err);
     return local;
@@ -220,7 +234,7 @@ export async function saveProject(profile) {
     // Re-key the local mirror to the remote id so the next load dedupes cleanly.
     removeLocal(profile);
     const saved = { ...profile, id: `remote-${row.id}`, remoteId: row.id, ownerId: userId };
-    upsertLocal(saved);
+    upsertLocal(saved, { dirty: false });
     return { ok: true, remote: true, error: null, profile: saved };
   } catch (err) {
     console.warn('[Supabase] Network error during insert:', err);
@@ -260,16 +274,17 @@ export async function updateProject(profile) {
     if (!rows.length) {
       return { ok: false, remote: false, error: 'That project is not yours to edit.', profile };
     }
+    upsertLocal(profile, { dirty: false });
     return { ok: true, remote: true, error: null, profile };
   } catch (err) {
-    return { ok: false, remote: false, error: 'Network error — changes saved to this browser only.', profile };
+    return { ok: false, remote: false, error: 'Network error — changes are saved on this device and will need re-saving when you are back online.', profile };
   }
 }
 
 export async function deleteProject(profile) {
-  removeLocal(profile);
-
+  // A pin that only ever lived here has no server state to coordinate with.
   if (!isSupabaseConfigured() || !profile.remoteId) {
+    removeLocal(profile);
     return { ok: true, remote: false, error: null };
   }
   if (!getUserId()) {
@@ -282,10 +297,22 @@ export async function deleteProject(profile) {
       { method: 'DELETE', headers: await restHeaders() }
     );
     if (!res.ok) {
-      return { ok: false, remote: false, error: await describeFailure(res) };
+      // The row is still on the server, so the local mirror must stay too —
+      // dropping it here used to make the project reappear on the next load.
+      // Lead with the outcome so the message is not just a server string.
+      return {
+        ok: false,
+        remote: false,
+        error: `The project was not deleted — ${await describeFailure(res)}`
+      };
     }
+    removeLocal(profile);
     return { ok: true, remote: true, error: null };
   } catch (err) {
-    return { ok: false, remote: false, error: 'Network error — removed from this browser only.' };
+    return {
+      ok: false,
+      remote: false,
+      error: 'Network error — the project was not deleted. Try again once you are back online.'
+    };
   }
 }

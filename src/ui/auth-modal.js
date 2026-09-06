@@ -1,6 +1,6 @@
 import {
   initAuth, onAuthChange, getUser, signIn, signUp, signOut, resendConfirmation,
-  signInWithOAuth, completeOAuthRedirect
+  signInWithOAuth, completeOAuthRedirect, revalidateSession
 } from '../api/auth.js';
 import { showToast } from './toast.js';
 
@@ -258,16 +258,29 @@ export function initAuthModal({ onChange } = {}) {
   renderAccountState(initAuth() || getUser());
 
   // A provider redirect lands here with the session (or an error) in the hash.
-  completeOAuthRedirect().then(result => {
-    if (!result.handled) return;
-    if (result.error) {
+  completeOAuthRedirect()
+    .then(result => {
+      if (!result.handled) {
+        // No redirect to consume — make sure a restored session is still valid
+        // before the rest of the UI trusts it.
+        return revalidateSession().then(() => undefined);
+      }
+      if (result.error) {
+        openAuthModal({ startMode: 'signin' });
+        setMessage(result.error);
+        return undefined;
+      }
+      if (result.user) {
+        closeAuthModal();
+        showToast(`Signed in as ${result.user.email}`, 3000);
+      }
+      return undefined;
+    })
+    .catch(err => {
+      // An unhandled rejection here used to leave the visitor on a signed-out
+      // page with no explanation and the hash already stripped.
+      console.error('[Auth] Could not complete sign-in:', err);
       openAuthModal({ startMode: 'signin' });
-      setMessage(result.error);
-      return;
-    }
-    if (result.user) {
-      closeAuthModal();
-      showToast(`Signed in as ${result.user.email}`, 3000);
-    }
-  });
+      setMessage('Could not complete sign-in. Please try again.');
+    });
 }

@@ -1,5 +1,5 @@
 import { camera, renderer } from '../three/scene.js';
-import { controls, flyCameraToCoordinates } from '../three/camera-flight.js';
+import { controls, flyCameraToCoordinates, setAutoRotateEnabled, isAutoRotateEnabledByUser } from '../three/camera-flight.js';
 import { closeProfileCard } from './profile-modal.js';
 import { openSubmitModal } from './submit-modal.js';
 import { openAuthModal } from './auth-modal.js';
@@ -99,9 +99,11 @@ export function initHud() {
   const btnToggleRotate = document.getElementById('btn-toggle-rotate');
   if (btnToggleRotate) {
     btnToggleRotate.addEventListener('click', () => {
-      controls.autoRotate = !controls.autoRotate;
-      btnToggleRotate.classList.toggle('active', controls.autoRotate);
-      btnToggleRotate.title = controls.autoRotate ? 'Pause Auto-Rotation' : 'Resume Auto-Rotation';
+      // Record intent, not the momentary state — a drag may have paused
+      // rotation without the user ever asking for it to stop.
+      const enabled = setAutoRotateEnabled(!isAutoRotateEnabledByUser());
+      btnToggleRotate.classList.toggle('active', enabled);
+      btnToggleRotate.title = enabled ? 'Pause Auto-Rotation' : 'Resume Auto-Rotation';
     });
   }
 

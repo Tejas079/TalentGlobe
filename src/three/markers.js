@@ -57,17 +57,41 @@ PROFILES_DATA.forEach(p => {
   p.pos3D = latLonToVector3(p.mLat, p.mLon, EARTH_RADIUS);
   p.normal = p.pos3D.clone().normalize();
   p._isMatch = true;
+  p._rev = 0;
 });
 
 /**
  * Dynamically registers a newly submitted or fetched community profile onto the 3D globe
  */
 export function registerNewProfile(p) {
+  const existing = PROFILES_DATA.find(e => e.id === p.id);
+
+  if (existing) {
+    // Merge onto the object already in PROFILES_DATA so marker slots, spotlight
+    // entries and any open card keep pointing at the same instance. Previously
+    // this branch dropped the incoming data entirely, so a project edited on
+    // another device never refreshed here.
+    Object.assign(existing, p);
+    refreshProfileGeometry(existing);
+    existing._isMatch = true;
+    invalidateProfileRender(existing);
+    return existing;
+  }
+
   refreshProfileGeometry(p);
   p._isMatch = true;
-  if (!PROFILES_DATA.find(existing => existing.id === p.id)) {
-    PROFILES_DATA.push(p);
-  }
+  p._rev = 0;
+  PROFILES_DATA.push(p);
+  return p;
+}
+
+/**
+ * Bumps a profile's render revision so renderPipeline rewrites the marker text
+ * on the next frame. Needed because edits mutate the profile in place, leaving
+ * slot.boundId unchanged.
+ */
+export function invalidateProfileRender(p) {
+  p._rev = (p._rev || 0) + 1;
   return p;
 }
 
@@ -88,6 +112,7 @@ export function unregisterProfile(p) {
   for (const slot of markerPool) {
     if (slot.boundId === p.id) {
       slot.boundId = null;
+      slot.boundRev = null;
       slot.element._boundProfile = null;
       slot.element.style.transform = 'translate3d(-9999px, -9999px, 0)';
       slot.element.style.opacity = '0';
@@ -216,6 +241,7 @@ export function initMarkerPool(container, onSelectProfile, onToggleCluster) {
       labelRole: el.querySelector('.marker-label-role'),
       labelMuted: false,
       boundId: null,
+      boundRev: null,
       _lastSelected: false
     });
   }
@@ -434,8 +460,9 @@ export function renderPipeline() {
         ? (isSelected ? `by ${p.name} • ${p.city}, ${p.country}` : `by ${p.name} • ${p.city}`)
         : `${p.title} • ${p.city}`;
 
-      if (slot.boundId !== p.id || slot._lastSelected !== isSelected) {
+      if (slot.boundId !== p.id || slot._lastSelected !== isSelected || slot.boundRev !== p._rev) {
         slot.boundId = p.id;
+        slot.boundRev = p._rev;
         slot._lastSelected = isSelected;
         slot.element._boundProfile = p;
         slot.element.className = `pool-marker marker-tier-${p.tier}${isSelected ? ' is-selected-pin' : ''}`;
@@ -463,6 +490,7 @@ export function renderPipeline() {
         slot.element.style.transform = 'translate3d(-9999px, -9999px, 0)';
         slot.element.style.opacity = '0';
         slot.boundId = null;
+        slot.boundRev = null;
         slot._lastSelected = false;
       }
     }

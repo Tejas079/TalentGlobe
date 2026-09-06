@@ -1,7 +1,7 @@
 import { geocodeLocation } from '../api/geocoding.js';
 import { saveProject, updateProject, loadCommunityProjects } from '../api/supabase.js';
 import { isSignedIn } from '../api/auth.js';
-import { registerNewProfile, refreshProfileGeometry } from '../three/markers.js';
+import { registerNewProfile, refreshProfileGeometry, invalidateProfileRender } from '../three/markers.js';
 import { showToast } from './toast.js';
 import { openAuthModal } from './auth-modal.js';
 
@@ -456,6 +456,9 @@ async function commitEdit(profile, form, coords) {
   });
 
   if (moved) refreshProfileGeometry(profile);
+  // The profile object is mutated in place, so the marker slot bound to it
+  // would otherwise keep rendering the old title until the slot rebinds.
+  invalidateProfileRender(profile);
 
   const result = await updateProject(profile);
   closeSubmitModal();

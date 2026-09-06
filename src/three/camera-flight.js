@@ -16,14 +16,39 @@ controls.autoRotateSpeed = 0.12;
 
 let idleTimer = null;
 
-export function pauseAutoRotateTemporarily() {
-  controls.autoRotate = false;
-  const toggleBtn = document.getElementById('btn-toggle-rotate');
-  if (toggleBtn) toggleBtn.classList.remove('active');
+// Distinguishes "paused for a moment because the user is interacting" from
+// "the user pressed the toggle off". Without this the idle timer resumed
+// rotation four seconds after any drag, overriding an explicit opt-out and
+// leaving the HUD button showing a state nobody asked for.
+let autoRotateEnabledByUser = true;
+
+export function isAutoRotateEnabledByUser() {
+  return autoRotateEnabledByUser;
+}
+
+/** Called by the HUD toggle. Returns the new user-intended state. */
+export function setAutoRotateEnabled(enabled) {
+  autoRotateEnabledByUser = Boolean(enabled);
   clearTimeout(idleTimer);
+  controls.autoRotate = autoRotateEnabledByUser;
+  return autoRotateEnabledByUser;
+}
+
+/**
+ * Stops the globe while the user is interacting, resuming 4s later. The HUD
+ * button is deliberately left alone: it indicates the user's choice, not this
+ * momentary pause. Toggling the class here made a drag flip the indicator, so
+ * the next click on the button appeared to do nothing.
+ */
+export function pauseAutoRotateTemporarily() {
+  clearTimeout(idleTimer);
+  controls.autoRotate = false;
+
+  if (!autoRotateEnabledByUser) return;
+
   idleTimer = setTimeout(() => {
+    if (!autoRotateEnabledByUser) return;
     controls.autoRotate = true;
-    if (toggleBtn) toggleBtn.classList.add('active');
   }, 4000);
 }
 

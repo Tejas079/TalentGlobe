@@ -67,16 +67,40 @@ function sessionFromTokenResponse(data) {
   };
 }
 
+/** Anything else in localStorage is someone else's data, or corrupt. */
+function isValidSessionShape(value) {
+  return Boolean(
+    value && typeof value === 'object' && !Array.isArray(value)
+    && typeof value.access_token === 'string' && value.access_token
+    && value.user && typeof value.user === 'object'
+    && typeof value.user.id === 'string'
+  );
+}
+
 /** Restores any stored session. Call once at boot. */
 export function initAuth() {
   try {
     const stored = localStorage.getItem(SESSION_KEY);
-    if (stored) session = JSON.parse(stored);
+    const parsed = stored ? JSON.parse(stored) : null;
+    session = isValidSessionShape(parsed) ? parsed : null;
+    if (stored && !session) localStorage.removeItem(SESSION_KEY);
   } catch (err) {
     session = null;
   }
   listeners.forEach(fn => fn(getUser()));
   return getUser();
+}
+
+/**
+ * Refreshes a restored session that has already expired. Without this an
+ * expired login rendered a fully signed-in UI whose every write silently fell
+ * back to the anon key and was rejected by row-level security.
+ */
+export async function revalidateSession() {
+  if (!session) return null;
+  if (session.expires_at && Date.now() <= session.expires_at - 60_000) return session;
+  const { session: next } = await refreshSession();
+  return next;
 }
 
 export function onAuthChange(fn) {
@@ -97,8 +121,16 @@ export function isSignedIn() {
   return Boolean(getUser());
 }
 
+/**
+ * @returns {Promise<{session: object|null, rejected: boolean}>} `rejected` is
+ * true only when the server refused the refresh token. A network failure
+ * leaves the stored session alone so going offline does not sign anyone out.
+ */
 async function refreshSession() {
-  if (!session || !session.refresh_token) return null;
+  if (!session || !session.refresh_token) {
+    persist(null);
+    return { session: null, rejected: true };
+  }
   try {
     const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
       method: 'POST',
@@ -107,14 +139,14 @@ async function refreshSession() {
     });
     if (!res.ok) {
       persist(null);
-      return null;
+      return { session: null, rejected: true };
     }
     const next = sessionFromTokenResponse(await res.json());
     persist(next);
-    return next;
+    return { session: next, rejected: false };
   } catch (err) {
-    console.warn('[Auth] Refresh failed:', err);
-    return null;
+    console.warn('[Auth] Refresh failed (offline?), keeping stored session:', err);
+    return { session: null, rejected: false };
   }
 }
 
@@ -122,7 +154,7 @@ async function refreshSession() {
 export async function getAccessToken() {
   if (!session) return null;
   if (session.expires_at && Date.now() > session.expires_at - 60_000) {
-    const next = await refreshSession();
+    const { session: next } = await refreshSession();
     return next ? next.access_token : null;
   }
   return session.access_token;
@@ -234,7 +266,9 @@ export async function completeOAuthRedirect() {
   const error = params.get('error_description') || params.get('error');
   if (error) {
     stripHash();
-    return { handled: true, error: decodeURIComponent(error.replace(/\+/g, ' ')) };
+    // URLSearchParams has already percent-decoded this and turned '+' into a
+    // space. Decoding a second time threw URIError on any literal '%'.
+    return { handled: true, error: String(error) };
   }
 
   const accessToken = params.get('access_token');

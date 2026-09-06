@@ -167,22 +167,90 @@ export async function geocodeLocation(city = '', country = '', isRemote = false)
   return getFallbackCoordinates(cleanCountry);
 }
 
+// Country centroids for when both the offline cache and Nominatim come up empty.
+// Keyed by exact normalised name plus explicit aliases — the previous version
+// used substring matching, so `includes('us')` claimed Australia, Austria,
+// Russia, Belarus, Cyprus and Mauritius, and `includes('uk')` claimed Ukraine.
+const COUNTRY_CENTROIDS = {
+  'india': { lat: 20.5937, lon: 78.9629 },
+  'united states': { lat: 37.0902, lon: -95.7129 },
+  'germany': { lat: 51.1657, lon: 10.4515 },
+  'united kingdom': { lat: 55.3781, lon: -3.4360 },
+  'japan': { lat: 36.2048, lon: 138.2529 },
+  'brazil': { lat: -14.2350, lon: -51.9253 },
+  'australia': { lat: -25.2744, lon: 133.7751 },
+  'singapore': { lat: 1.3521, lon: 103.8198 },
+  'canada': { lat: 56.1304, lon: -106.3468 },
+  'france': { lat: 46.2276, lon: 2.2137 },
+  'netherlands': { lat: 52.1326, lon: 5.2913 },
+  'sweden': { lat: 60.1282, lon: 18.6435 },
+  'switzerland': { lat: 46.8182, lon: 8.2275 },
+  'austria': { lat: 47.5162, lon: 14.5501 },
+  'russia': { lat: 61.5240, lon: 105.3188 },
+  'ukraine': { lat: 48.3794, lon: 31.1656 },
+  'belarus': { lat: 53.7098, lon: 27.9534 },
+  'cyprus': { lat: 35.1264, lon: 33.4299 },
+  'mauritius': { lat: -20.3484, lon: 57.5522 },
+  'nigeria': { lat: 9.0820, lon: 8.6753 },
+  'kenya': { lat: -0.0236, lon: 37.9062 },
+  'south africa': { lat: -30.5595, lon: 22.9375 },
+  'egypt': { lat: 26.8206, lon: 30.8025 },
+  'israel': { lat: 31.0461, lon: 34.8516 },
+  'united arab emirates': { lat: 23.4241, lon: 53.8478 },
+  'indonesia': { lat: -0.7893, lon: 113.9213 },
+  'malaysia': { lat: 4.2105, lon: 101.9758 },
+  'thailand': { lat: 15.8700, lon: 100.9925 },
+  'vietnam': { lat: 14.0583, lon: 108.2772 },
+  'philippines': { lat: 12.8797, lon: 121.7740 },
+  'south korea': { lat: 35.9078, lon: 127.7669 },
+  'taiwan': { lat: 23.6978, lon: 120.9605 },
+  'bangladesh': { lat: 23.6850, lon: 90.3563 },
+  'pakistan': { lat: 30.3753, lon: 69.3451 },
+  'sri lanka': { lat: 7.8731, lon: 80.7718 },
+  'mexico': { lat: 23.6345, lon: -102.5528 },
+  'argentina': { lat: -38.4161, lon: -63.6167 },
+  'colombia': { lat: 4.5709, lon: -74.2973 },
+  'chile': { lat: -35.6751, lon: -71.5430 },
+  'spain': { lat: 40.4637, lon: -3.7492 },
+  'italy': { lat: 41.8719, lon: 12.5674 },
+  'poland': { lat: 51.9194, lon: 19.1451 },
+  'ireland': { lat: 53.4129, lon: -8.2439 },
+  'finland': { lat: 61.9241, lon: 25.7482 },
+  'estonia': { lat: 58.5953, lon: 25.0136 },
+  'new zealand': { lat: -40.9006, lon: 174.8860 },
+  'china': { lat: 35.8617, lon: 104.1954 }
+};
+
+// Common spellings that should resolve to a canonical key above.
+const COUNTRY_ALIASES = {
+  'bharat': 'india',
+  'usa': 'united states', 'u.s.': 'united states', 'u.s.a.': 'united states',
+  'us': 'united states', 'america': 'united states',
+  'uk': 'united kingdom', 'u.k.': 'united kingdom',
+  'great britain': 'united kingdom', 'britain': 'united kingdom',
+  'england': 'united kingdom', 'scotland': 'united kingdom', 'wales': 'united kingdom',
+  'deutschland': 'germany',
+  'uae': 'united arab emirates',
+  'korea': 'south korea', 'republic of korea': 'south korea',
+  'holland': 'netherlands',
+  'russian federation': 'russia',
+  'brasil': 'brazil'
+};
+
+const DEFAULT_CENTROID = { lat: 18.5204, lon: 73.8567 };
+
 function getFallbackCoordinates(country) {
-  const countryLower = (country || '').toLowerCase();
-  if (countryLower.includes('india') || countryLower.includes('bharat')) return { lat: 20.5937, lon: 78.9629, source: 'fallback' };
-  if (countryLower.includes('united states') || countryLower.includes('usa') || countryLower.includes('us')) return { lat: 37.0902, lon: -95.7129, source: 'fallback' };
-  if (countryLower.includes('germany') || countryLower.includes('deutschland')) return { lat: 51.1657, lon: 10.4515, source: 'fallback' };
-  if (countryLower.includes('united kingdom') || countryLower.includes('uk')) return { lat: 55.3781, lon: -3.4360, source: 'fallback' };
-  if (countryLower.includes('japan')) return { lat: 36.2048, lon: 138.2529, source: 'fallback' };
-  if (countryLower.includes('brazil')) return { lat: -14.2350, lon: -51.9253, source: 'fallback' };
-  if (countryLower.includes('australia')) return { lat: -25.2744, lon: 133.7751, source: 'fallback' };
-  if (countryLower.includes('singapore')) return { lat: 1.3521, lon: 103.8198, source: 'fallback' };
-  if (countryLower.includes('canada')) return { lat: 56.1304, lon: -106.3468, source: 'fallback' };
-  if (countryLower.includes('france')) return { lat: 46.2276, lon: 2.2137, source: 'fallback' };
-  if (countryLower.includes('netherlands')) return { lat: 52.1326, lon: 5.2913, source: 'fallback' };
-  if (countryLower.includes('sweden')) return { lat: 60.1282, lon: 18.6435, source: 'fallback' };
-  if (countryLower.includes('switzerland')) return { lat: 46.8182, lon: 8.2275, source: 'fallback' };
-  
-  return { lat: 18.5204, lon: 73.8567, source: 'fallback' };
+  const key = (country || '')
+    .trim()
+    .toLowerCase()
+    .replace(/^the\s+/, '')
+    .replace(/\s+/g, ' ');
+
+  const canonical = COUNTRY_ALIASES[key] || key;
+  const hit = COUNTRY_CENTROIDS[canonical];
+  if (hit) return { lat: hit.lat, lon: hit.lon, source: 'fallback' };
+
+  return { ...DEFAULT_CENTROID, source: 'fallback' };
 }
+
 
