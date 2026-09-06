@@ -19,6 +19,9 @@ import { initAuthModal } from './ui/auth-modal.js';
 import { initInfoModal } from './ui/info-modal.js';
 import { initMyProjects, render as renderMyProjects } from './ui/my-projects.js';
 import { initClaimModal } from './ui/claim-modal.js';
+import { celestialSystem } from './three/celestial-system.js';
+import { flyCameraToCelestial } from './three/camera-flight.js';
+import { initCelestialUI, openCelestialCard } from './ui/celestial-modal.js';
 
 
 // 1. Mount WebGL Canvas
@@ -131,6 +134,17 @@ initClaimModal({
 });
 initHud();
 
+// 5. Initialize Hollywood-grade Celestial Solar System
+celestialSystem.init(canvasContainer, (cfg, profile) => {
+  const mesh = celestialSystem.getMeshByRank(cfg.rank);
+  if (mesh) {
+    flyCameraToCelestial(mesh.position, new THREE.Vector3(0, 0, 0), cfg.size * 3.8 + 25, 1.6);
+  }
+  openCelestialCard(cfg, profile);
+});
+
+initCelestialUI(celestialSystem);
+
 bootComplete = true;
 
 
@@ -149,6 +163,9 @@ function animate(currentTime) {
 
   // Atmospheric cloud drift
   updateAtmosphere();
+
+  // Advance celestial solar system and planetary orbits
+  celestialSystem.update(delta);
 
   // Project markers and handle occlusion
   renderPipeline();

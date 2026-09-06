@@ -54,6 +54,25 @@
     </div>
   </header>
 
+  <!-- Cosmic Mode & Hollywood Cinematic Tour Controls -->
+  <div class="cosmic-mode-toggle" id="cosmic-mode-toggle" style="position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 35;">
+    <button class="cosmic-toggle-btn active" id="btn-mode-earth" title="Focus on 3D Earth and Global Builders">
+      <span>🌍</span> Earth View
+    </button>
+    <button class="cosmic-toggle-btn" id="btn-mode-cosmic" title="Zoom out to View the Solar System and Orbiting VIP Planets">
+      <span>☀️</span> Solar System
+    </button>
+    <button class="cosmic-toggle-btn tour-btn" id="btn-mode-tour" title="Start Hollywood-style Cinematic Tour">
+      <span>🎬</span> Cinematic Tour
+    </button>
+  </div>
+
+  <div class="cinematic-tour-banner" id="cinematic-tour-banner" style="display: none;">
+    <span class="tour-pulse-dot"></span>
+    <span class="tour-text" id="tour-banner-text">🎬 CINEMATIC TOUR • THE SUN (TRIPEZY #1)</span>
+    <button class="tour-exit-btn" id="btn-exit-tour">✕ Exit Tour</button>
+  </div>
+
   <!-- Hero Headline & Supporting Copy -->
   <div class="hero-banner" id="hero-banner">
     <div class="hero-eyebrow">Worldwide Project & Maker Map</div>
@@ -215,6 +234,33 @@
       <button class="card-btn-primary" id="card-btn-demo">⚡ Live Demo</button>
       <button class="card-btn-secondary" id="card-btn-contact">✉ Hire / Contact Maker</button>
       <button class="card-btn-edit" id="card-btn-edit" hidden>✎ Edit</button>
+    </div>
+  </article>
+
+  <!-- Cosmic Celestial Planetary Showcase Modal Card -->
+  <article class="celestial-showcase-card" id="celestial-showcase-card">
+    <div class="celestial-card-header">
+      <span class="celestial-card-badge" id="celestial-badge">👑 SUPREME SPONSOR #1</span>
+      <button class="celestial-card-close" id="btn-close-celestial">✕</button>
+    </div>
+    <div class="celestial-body-title" id="celestial-title">
+      <span id="celestial-icon">☀️</span>
+      <span id="celestial-name">The Sun</span>
+    </div>
+    <p class="celestial-body-desc" id="celestial-desc">The Golden Star at the center of the universe. Illuminates all worlds.</p>
+    <div class="celestial-sponsor-box">
+      <div class="celestial-sponsor-tag">Active Sponsor & Project</div>
+      <div class="celestial-proj-name" id="celestial-proj-name">TRIPEZY</div>
+      <div class="celestial-proj-founder" id="celestial-proj-founder">by Tejas Kshirsagar • Pune, India</div>
+      <div class="celestial-proj-tagline" id="celestial-proj-tagline">AI trip planning, practical local guidance, and tools that remove friction — so you arrive prepared, not just excited.</div>
+    </div>
+    <div class="celestial-actions-row">
+      <a href="https://www.tripezy.in/" target="_blank" rel="noopener noreferrer" class="celestial-demo-btn" id="celestial-demo-link">
+        <span>🚀</span> Visit Project
+      </a>
+      <button class="celestial-claim-btn" id="celestial-claim-trigger">
+        <span>👑</span> Claim Planet Spot
+      </button>
     </div>
   </article>
 
@@ -471,8 +517,26 @@
       </div>
 
       <form id="claim-spotlight-form" class="submit-form">
-        <div class="form-section-title">01. Flagship Project Details</div>
-        
+        <div class="form-section-title">01. Celestial Body & Project Details</div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="claim-celestial-body">Select Celestial Spot to Claim *</label>
+            <select id="claim-celestial-body" style="border-color: #F59E0B; background: rgba(245, 158, 11, 0.08); font-weight: 700; color: #FEF3C7;">
+              <option value="sun" selected>☀️ The Sun — #1 Supreme Sponsor (Center of the Galaxy) • ₹19,999</option>
+              <option value="jupiter">🪐 Jupiter — VIP Spot #2 (The Tech Titan) • ₹11,999</option>
+              <option value="saturn">🪐 Saturn — VIP Spot #3 (Ringed Majesty) • ₹9,999</option>
+              <option value="mars">🔴 Mars — VIP Spot #4 (Frontier Builder) • ₹6,999</option>
+              <option value="venus">💎 Venus — VIP Spot #5 (Morning Star) • ₹4,999</option>
+              <option value="mercury">⚡ Mercury — VIP Spot #6 (Speed Demon) • ₹4,999</option>
+              <option value="moon">🌕 The Moon — VIP Spot #7 (Orbital Companion) • ₹3,999</option>
+              <option value="neptune">🔵 Neptune — VIP Spot #8 (Deep Azure Giant) • ₹2,999</option>
+              <option value="uranus">🌀 Uranus — VIP Spot #9 (Cyan Ice Giant) • ₹2,999</option>
+              <option value="pluto">❄️ Pluto Outpost — VIP Spot #10 (Outer Frontier) • ₹2,499</option>
+            </select>
+          </div>
+        </div>
+
         <div class="form-row">
           <div class="form-group flex-2">
             <label for="claim-title">Project / Company Name *</label>

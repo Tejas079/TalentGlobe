@@ -1,0 +1,365 @@
+/* --------------------------------------------------------------------------
+   CELESTIAL SYSTEM & SOLAR PROTOTYPE STYLING
+   Hollywood-grade cosmic aesthetics, neon glow, gold corona, and glassmorphism
+   -------------------------------------------------------------------------- */
+
+/* 1. Floating 3D Billboard Labels */
+.celestial-billboard-label {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  transform: translate(-50%, -100%);
+  cursor: pointer;
+  pointer-events: auto;
+  user-select: none;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  will-change: transform, opacity;
+}
+
+.celestial-billboard-label:hover {
+  transform: translate(-50%, -108%) scale(1.08);
+  z-index: 50;
+}
+
+.celestial-badge-pill {
+  font-family: var(--font-mono, monospace);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38BDF8;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+  white-space: nowrap;
+}
+
+.celestial-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(10, 15, 26, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+}
+
+.celestial-icon {
+  font-size: 13px;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.5));
+}
+
+.celestial-name {
+  font-family: var(--font-sans, system-ui);
+  font-size: 11px;
+  font-weight: 700;
+  color: #F8FAFC;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+/* ☀️ THE SUN #1 SUPREME STYLING */
+.celestial-billboard-label.sun-label .celestial-badge-pill {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.35), rgba(217, 119, 6, 0.2));
+  border-color: #F59E0B;
+  color: #FDE68A;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.65);
+}
+
+.celestial-billboard-label.sun-label .celestial-name-row {
+  background: rgba(20, 14, 4, 0.92);
+  border: 1.5px solid #F59E0B;
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.45), inset 0 0 12px rgba(245, 158, 11, 0.2);
+}
+
+.celestial-billboard-label.sun-label .celestial-name {
+  color: #FEF3C7;
+  font-weight: 800;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
+}
+
+/* 2. Top-Center Hollywood View Toggle Pill */
+.cosmic-mode-toggle {
+  display: flex;
+  align-items: center;
+  background: rgba(10, 14, 22, 0.82);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 999px;
+  padding: 3px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.55), 0 0 16px rgba(245, 158, 11, 0.12);
+  backdrop-filter: blur(14px);
+  pointer-events: auto;
+}
+
+.cosmic-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #94A3B8;
+  font-family: var(--font-sans, system-ui);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cosmic-toggle-btn:hover {
+  color: #F8FAFC;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cosmic-toggle-btn.active {
+  color: #0A0A0C;
+  background: linear-gradient(135deg, #FBBF24, #F59E0B);
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.55);
+  font-weight: 700;
+}
+
+.cosmic-toggle-btn.tour-btn {
+  color: #38BDF8;
+}
+
+.cosmic-toggle-btn.tour-btn.active {
+  color: #0A0A0C;
+  background: linear-gradient(135deg, #38BDF8, #0284C7);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.65);
+}
+
+/* 3. Cinematic Tour Overlay Banner */
+.cinematic-tour-banner {
+  position: absolute;
+  top: 75px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 18px;
+  background: rgba(10, 15, 26, 0.88);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 999px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.25);
+  z-index: 45;
+  pointer-events: auto;
+  animation: fadeInDown 0.4s ease;
+}
+
+.tour-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #38BDF8;
+  box-shadow: 0 0 10px #38BDF8;
+  animation: pulseDot 1.4s infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.3); }
+}
+
+.tour-text {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #F8FAFC;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.tour-exit-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #E2E8F0;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.tour-exit-btn:hover {
+  background: rgba(239, 68, 68, 0.4);
+  border-color: #EF4444;
+  color: #FFFFFF;
+}
+
+/* 4. Cosmic Celestial Modal Showcase */
+.celestial-showcase-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.96);
+  width: 90%;
+  max-width: 440px;
+  background: rgba(10, 14, 24, 0.94);
+  border: 1.5px solid rgba(245, 158, 11, 0.4);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 158, 11, 0.25);
+  backdrop-filter: blur(24px);
+  z-index: 100;
+  color: #F8FAFC;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.celestial-showcase-card.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.celestial-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.celestial-card-badge {
+  font-family: var(--font-mono, monospace);
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid #F59E0B;
+  color: #FDE68A;
+  letter-spacing: 0.08em;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+.celestial-card-close {
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  color: #94A3B8;
+  font-size: 16px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.celestial-card-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #F8FAFC;
+}
+
+.celestial-body-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+  font-weight: 800;
+  color: #FEF3C7;
+  margin-bottom: 6px;
+}
+
+.celestial-body-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #94A3B8;
+  margin-bottom: 18px;
+}
+
+.celestial-sponsor-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 18px;
+}
+
+.celestial-sponsor-tag {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #F59E0B;
+  margin-bottom: 4px;
+}
+
+.celestial-proj-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #F8FAFC;
+  margin-bottom: 4px;
+}
+
+.celestial-proj-founder {
+  font-size: 11px;
+  color: #94A3B8;
+  margin-bottom: 8px;
+}
+
+.celestial-proj-tagline {
+  font-size: 11.5px;
+  color: #CBD5E1;
+  line-height: 1.45;
+}
+
+.celestial-actions-row {
+  display: flex;
+  gap: 10px;
+}
+
+.celestial-demo-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #FBBF24, #F59E0B);
+  color: #0A0A0C;
+  font-weight: 700;
+  font-size: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.celestial-demo-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+}
+
+.celestial-claim-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #FDE68A;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.celestial-claim-btn:hover {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: #F59E0B;
+}

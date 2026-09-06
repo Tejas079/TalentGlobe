@@ -183,6 +183,21 @@ export function initClaimModal({ openProfileCard, flyCameraToCoordinates, onProj
       const country = (document.getElementById('claim-country')?.value || '').trim();
       const demoUrl = (document.getElementById('claim-demo')?.value || '').trim();
 
+      const celestialBody = document.getElementById('claim-celestial-body')?.value || 'sun';
+      const CELESTIAL_RANKS = {
+        sun: { rank: 1, name: 'The Sun', badge: '👑 Supreme Sun #1', metric: '☀️ #1 Sun Sponsor' },
+        jupiter: { rank: 2, name: 'Jupiter', badge: '🪐 VIP Jupiter #2', metric: '🪐 Jupiter Titan' },
+        saturn: { rank: 3, name: 'Saturn', badge: '🪐 VIP Saturn #3', metric: '🪐 Saturn Rings' },
+        mars: { rank: 4, name: 'Mars', badge: '🔴 VIP Mars #4', metric: '🔴 Mars Frontier' },
+        venus: { rank: 5, name: 'Venus', badge: '💎 VIP Venus #5', metric: '💎 Venus Star' },
+        mercury: { rank: 6, name: 'Mercury', badge: '⚡ VIP Mercury #6', metric: '⚡ Mercury Speed' },
+        moon: { rank: 7, name: 'The Moon', badge: '🌕 VIP Moon #7', metric: '🌕 Lunar Companion' },
+        neptune: { rank: 8, name: 'Neptune', badge: '🔵 VIP Neptune #8', metric: '🔵 Azure Giant' },
+        uranus: { rank: 9, name: 'Uranus', badge: '🌀 VIP Uranus #9', metric: '🌀 Ice Giant' },
+        pluto: { rank: 10, name: 'Pluto', badge: '❄️ VIP Pluto #10', metric: '❄️ Outer Outpost' }
+      };
+      const chosenCelestial = CELESTIAL_RANKS[celestialBody] || CELESTIAL_RANKS.sun;
+
       if (!title || !makerName || !city || !country) {
         showToast('Please complete all required fields.', 3000);
         return;
@@ -218,8 +233,8 @@ export function initClaimModal({ openProfileCard, flyCameraToCoordinates, onProj
           lat: coords.lat,
           lon: coords.lon,
           tier: 5,
-          tierName: '₹9,999 Front of Globe',
-          spotlightRank: 1,
+          tierName: `VIP Celestial Spot: ${chosenCelestial.name}`,
+          spotlightRank: chosenCelestial.rank,
           skills: [category, 'Full-Stack', 'Cloud'],
           experience: 'Founder',
           availability: 'AVAILABLE FOR OPPORTUNITIES',
@@ -230,8 +245,8 @@ export function initClaimModal({ openProfileCard, flyCameraToCoordinates, onProj
             title,
             tagline,
             techStack: [category, 'Production'],
-            metric,
-            badge: '👑 Gold Spotlight #1',
+            metric: metric || chosenCelestial.metric,
+            badge: chosenCelestial.badge,
             demoUrl: demoUrl || '#'
           }
         };
