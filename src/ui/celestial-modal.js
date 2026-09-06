@@ -138,6 +138,8 @@ export function openCelestialCard(cfg, profile, mesh = null) {
   const iconEl = document.getElementById('celestial-icon');
   const nameEl = document.getElementById('celestial-name');
   const descEl = document.getElementById('celestial-desc');
+  const statDayEl = document.getElementById('celestial-stat-day');
+  const statYearEl = document.getElementById('celestial-stat-year');
   const projNameEl = document.getElementById('celestial-proj-name');
   const projFounderEl = document.getElementById('celestial-proj-founder');
   const projTaglineEl = document.getElementById('celestial-proj-tagline');
@@ -148,6 +150,8 @@ export function openCelestialCard(cfg, profile, mesh = null) {
   if (iconEl) iconEl.textContent = cfg.symbol;
   if (nameEl) nameEl.textContent = cfg.name;
   if (descEl) descEl.textContent = cfg.desc;
+  if (statDayEl) statDayEl.textContent = `⏳ Day: ${cfg.realDay || '24 Hours'}`;
+  if (statYearEl) statYearEl.textContent = `🪐 Orbit: ${cfg.realYear || '1 Earth Year'}`;
 
   if (profile) {
     const proj = profile.project || {};

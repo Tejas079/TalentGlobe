@@ -12,7 +12,7 @@ controls.minDistance = 125;
 controls.maxDistance = 1200;
 controls.enablePan = false;
 controls.autoRotate = true;
-controls.autoRotateSpeed = 0.12;
+controls.autoRotateSpeed = 0.04; // Calibrated for gentle, realistic planetary drift
 
 let idleTimer = null;
 

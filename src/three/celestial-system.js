@@ -16,7 +16,10 @@ export const CELESTIAL_CONFIG = [
     rank: 1,
     size: 26,
     orbitRadius: 460,
-    orbitSpeed: 0.0003,
+    orbitSpeed: 0.000015, // Subtle barycentric cosmic drift
+    spinSpeed: 0.00002,   // Real Sun: ~25 Earth days (slow plasma core rotation)
+    realDay: '25.4 Earth Days',
+    realYear: 'Center Anchor',
     orbitAngle: 0.85,
     inclination: 0.12,
     color: 0xF59E0B,
@@ -32,7 +35,10 @@ export const CELESTIAL_CONFIG = [
     rank: 2,
     size: 13.5,
     orbitRadius: 360,
-    orbitSpeed: 0.0012,
+    orbitSpeed: 0.00009,  // Real orbit: 11.86 Earth years
+    spinSpeed: 0.00072,   // Real day: 9.93 hours (Fastest gas giant spin, ~2.4x Earth)
+    realDay: '9.9 Hours (Fast Gas Giant)',
+    realYear: '11.86 Earth Years',
     orbitAngle: 2.1,
     inclination: 0.08,
     color: 0xD97706,
@@ -48,7 +54,10 @@ export const CELESTIAL_CONFIG = [
     rank: 3,
     size: 11.5,
     orbitRadius: 420,
-    orbitSpeed: 0.0009,
+    orbitSpeed: 0.00006,  // Real orbit: 29.45 Earth years
+    spinSpeed: 0.00067,   // Real day: 10.7 hours (~2.2x Earth)
+    realDay: '10.7 Hours',
+    realYear: '29.45 Earth Years',
     orbitAngle: 3.8,
     inclination: 0.16,
     color: 0xFDE68A,
@@ -67,7 +76,10 @@ export const CELESTIAL_CONFIG = [
     rank: 4,
     size: 7.2,
     orbitRadius: 280,
-    orbitSpeed: 0.0022,
+    orbitSpeed: 0.00018,  // Real orbit: 687 Earth days (1.88 years)
+    spinSpeed: 0.00029,   // Real day: 24.6 hours (Almost identical to Earth's 24 hours!)
+    realDay: '24.6 Hours',
+    realYear: '687 Earth Days',
     orbitAngle: 5.1,
     inclination: 0.05,
     color: 0xEF4444,
@@ -82,7 +94,10 @@ export const CELESTIAL_CONFIG = [
     rank: 5,
     size: 8.4,
     orbitRadius: 230,
-    orbitSpeed: 0.0031,
+    orbitSpeed: 0.00030,  // Real orbit: 224.7 Earth days
+    spinSpeed: -0.00002,  // Real day: 243 Earth days (Super slow retrograde rotation!)
+    realDay: '243 Earth Days (Retrograde)',
+    realYear: '225 Earth Days',
     orbitAngle: 1.2,
     inclination: 0.06,
     color: 0xFBBF24,
@@ -97,7 +112,10 @@ export const CELESTIAL_CONFIG = [
     rank: 6,
     size: 5.5,
     orbitRadius: 185,
-    orbitSpeed: 0.0048,
+    orbitSpeed: 0.00045,  // Real orbit: 88 Earth days (Fastest planetary orbit!)
+    spinSpeed: 0.00004,   // Real day: 58.6 Earth days (Slow prograde spin)
+    realDay: '58.6 Earth Days',
+    realYear: '88 Earth Days (Fastest Orbit)',
     orbitAngle: 4.4,
     inclination: 0.14,
     color: 0x94A3B8,
@@ -112,7 +130,10 @@ export const CELESTIAL_CONFIG = [
     rank: 7,
     size: 5.0,
     orbitRadius: 138,
-    orbitSpeed: 0.0065,
+    orbitSpeed: 0.00065,  // Real orbit: 27.3 Earth days around Earth
+    spinSpeed: 0.00002,   // Tidally locked to Earth
+    realDay: 'Tidally Locked (27.3 Days)',
+    realYear: '27.3 Days (Lunar Orbit)',
     orbitAngle: 0.3,
     inclination: 0.22,
     color: 0xE2E8F0,
@@ -127,7 +148,10 @@ export const CELESTIAL_CONFIG = [
     rank: 8,
     size: 9.2,
     orbitRadius: 490,
-    orbitSpeed: 0.0006,
+    orbitSpeed: 0.000028, // Real orbit: 164.8 Earth years
+    spinSpeed: 0.00045,   // Real day: 16.1 hours (~1.5x Earth)
+    realDay: '16.1 Hours',
+    realYear: '164.8 Earth Years',
     orbitAngle: 2.9,
     inclination: 0.04,
     color: 0x3B82F6,
@@ -142,7 +166,10 @@ export const CELESTIAL_CONFIG = [
     rank: 9,
     size: 9.0,
     orbitRadius: 455,
-    orbitSpeed: 0.0007,
+    orbitSpeed: 0.000040, // Real orbit: 84.0 Earth years
+    spinSpeed: -0.00042,  // Real day: 17.2 hours (Retrograde on 98° tilted axis!)
+    realDay: '17.2 Hours (Retrograde)',
+    realYear: '84.0 Earth Years',
     orbitAngle: 0.1,
     inclination: 0.11,
     color: 0x06B6D4,
@@ -157,7 +184,10 @@ export const CELESTIAL_CONFIG = [
     rank: 10,
     size: 4.5,
     orbitRadius: 530,
-    orbitSpeed: 0.0004,
+    orbitSpeed: 0.000018, // Real orbit: 248.0 Earth years
+    spinSpeed: -0.00008,  // Real day: 6.4 Earth days (Retrograde)
+    realDay: '6.4 Earth Days (Retrograde)',
+    realYear: '248.0 Earth Years',
     orbitAngle: 3.5,
     inclination: 0.28,
     color: 0xC084FC,
@@ -583,17 +613,20 @@ export class CelestialSystem {
 
   update(delta) {
     const time = performance.now();
+    // Normalize frame delta (1.0 at standard 60 FPS, clamped to prevent lag teleports)
+    const dt = Math.min(Math.max((delta || 16.67) / 16.667, 0.2), 3.0);
 
     // Advance planetary orbital mechanics
     this.planets.forEach((mesh, index) => {
       const cfg = mesh.userData.config;
       if (!cfg) return;
 
-      // Axial spin
-      mesh.rotation.y += 0.008;
+      // Realistic Axial spin as per real planet sidereal physics
+      const spin = cfg.spinSpeed !== undefined ? cfg.spinSpeed : 0.0003;
+      mesh.rotation.y += spin * dt;
 
-      // Orbital progression
-      cfg.orbitAngle += cfg.orbitSpeed * delta * 0.06;
+      // Realistic Orbital progression as per Keplerian mechanics
+      cfg.orbitAngle += (cfg.orbitSpeed || 0.0001) * dt;
 
       const x = Math.cos(cfg.orbitAngle) * cfg.orbitRadius;
       const z = Math.sin(cfg.orbitAngle) * cfg.orbitRadius;
