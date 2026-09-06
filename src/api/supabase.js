@@ -206,8 +206,14 @@ export async function loadCommunityProjects() {
     // An edit that never reached the server must not be overwritten by the
     // stale row it was meant to replace.
     const reconciled = remote.map(r => dirtyByRemoteId.get(String(r.remoteId)) || r);
-    const neverSynced = local.filter(p => !p.remoteId || !remoteIds.has(String(p.remoteId)));
-    return [...reconciled, ...neverSynced];
+    // Only preserve local drafts that were never submitted to the server yet (no remoteId AND _dirty).
+    // If a project had a remoteId and is now missing from Supabase, it was deleted in Supabase and must NOT be revived.
+    const neverSynced = local.filter(p => !p.remoteId && p._dirty);
+    const finalProjects = [...reconciled, ...neverSynced];
+
+    // Sync local mirror so anything deleted remotely in Supabase is purged from localStorage immediately.
+    writeLocal(finalProjects);
+    return finalProjects;
   } catch (err) {
     console.warn('[Supabase] Network error, showing local projects only:', err);
     return local;

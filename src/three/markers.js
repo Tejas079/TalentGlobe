@@ -130,11 +130,31 @@ export function registerTier5Profile(p) {
   p.tier = 5;
   p.tierName = '₹9,999 Front of Globe';
   p.spotlightRank = 1;
+
+  // Check if a placeholder or duplicate with same title/id already exists in PROFILES_DATA
+  const duplicateIdx = PROFILES_DATA.findIndex(x => 
+    x !== p && (
+      x.id === p.id ||
+      (p.remoteId && x.remoteId === p.remoteId) ||
+      (x.project?.title && p.project?.title && x.project.title.trim().toLowerCase() === p.project.title.trim().toLowerCase())
+    )
+  );
+  if (duplicateIdx >= 0) {
+    const existing = PROFILES_DATA[duplicateIdx];
+    unregisterProfile(existing);
+    const t5Idx = tier5Profiles.indexOf(existing);
+    if (t5Idx >= 0) tier5Profiles.splice(t5Idx, 1);
+  }
+
   registerNewProfile(p);
   p._stalkQuat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), p.normal);
 
-  // Remove existing instance if already present
-  const existingIdx = tier5Profiles.findIndex(x => x.id === p.id || (p.remoteId && x.remoteId === p.remoteId));
+  // Remove existing instance if already present in tier5Profiles
+  const existingIdx = tier5Profiles.findIndex(x => 
+    x === p || x.id === p.id || 
+    (p.remoteId && x.remoteId === p.remoteId) ||
+    (x.project?.title && p.project?.title && x.project.title.trim().toLowerCase() === p.project.title.trim().toLowerCase())
+  );
   if (existingIdx >= 0) {
     tier5Profiles.splice(existingIdx, 1);
   }
