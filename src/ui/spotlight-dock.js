@@ -37,28 +37,38 @@ export function updateDynamicSpotlights(onSelectProfile) {
 
   vCam.copy(camera.position);
 
+  // 1. Sort all profiles by spotlight rank
+  const byRank = (a, b) => (a.spotlightRank || 999) - (b.spotlightRank || 999);
+  const sortedProfiles = [...tier5Profiles].sort(byRank);
+
+  // Rank #1 Spotlight is the flagship card: ALWAYS PIN AT SLOT 1
+  const rank1 = sortedProfiles[0];
+
   const inView = [];
   const offView = [];
-  tier5Profiles.forEach(p => {
+  sortedProfiles.slice(1).forEach(p => {
     vDir.subVectors(vCam, p.pos3D).normalize();
     (p.normal.dot(vDir) > 0.08 ? inView : offView).push(p);
   });
 
-  const byRank = (a, b) => a.spotlightRank - b.spotlightRank;
-  inView.sort(byRank);
-  offView.sort(byRank);
-
-  // Compute the 6 cards that will actually be visible
-  const display = inView.slice(0, SPOTLIGHT_SLOTS);
+  // Display array always starts with Rank #1, followed by visible in-view cards, then top off-view cards
+  const display = rank1 ? [rank1] : [];
+  for (let i = 0; display.length < SPOTLIGHT_SLOTS && i < inView.length; i++) {
+    display.push(inView[i]);
+  }
   for (let i = 0; display.length < SPOTLIGHT_SLOTS && i < offView.length; i++) {
     display.push(offView[i]);
   }
 
-  // Key is based on the 6 displayed cards, not all 20 global items
+  // Key is based on the displayed cards
   const key = display.map(p => p.id).join(',');
   if (key === lastSpotlightTopIds) {
     // Just sync is-offview and active classes without wiping DOM
     const liveSet = new Set(inView.map(p => String(p.id)));
+    if (rank1) {
+      vDir.subVectors(vCam, rank1.pos3D).normalize();
+      if (rank1.normal.dot(vDir) > 0.08) liveSet.add(String(rank1.id));
+    }
     const cards = spotlightCarousel.querySelectorAll('.spotlight-card-item');
     cards.forEach(c => {
       const pid = c.dataset.profileId;
@@ -73,6 +83,10 @@ export function updateDynamicSpotlights(onSelectProfile) {
 
   spotlightCarousel.innerHTML = '';
   const live = new Set(inView.map(p => p.id));
+  if (rank1) {
+    vDir.subVectors(vCam, rank1.pos3D).normalize();
+    if (rank1.normal.dot(vDir) > 0.08) live.add(rank1.id);
+  }
   display.forEach(p => appendSpotlightCard(p, live.has(p.id), onSelectProfile));
   appendClaimCard();
 }
@@ -100,16 +114,17 @@ function appendClaimCard() {
 function appendSpotlightCard(p, isLive, onSelectProfile) {
   const card = document.createElement('div');
   const isActive = (p.id === activeProfileId);
-  card.className = 'spotlight-card-item' + (isLive ? '' : ' is-offview') + (isActive ? ' active' : '');
+  const isRank1 = (p.spotlightRank === 1);
+  card.className = 'spotlight-card-item' + (isLive ? '' : ' is-offview') + (isActive ? ' active' : '') + (isRank1 ? ' rank-1-vip' : '');
   card.dataset.profileId = p.id;
 
   const projTitle = (p.project && p.project.title) ? p.project.title : p.name;
   const metric = (p.project && p.project.metric) ? p.project.metric : 'Featured';
 
   card.innerHTML = `
-    <div class="spotlight-avatar">${p.initials}</div>
+    <div class="spotlight-avatar">${isRank1 ? '👑' : p.initials}</div>
     <div class="spotlight-meta">
-      <span class="spotlight-rank-tag">#${p.spotlightRank} • ${metric}</span>
+      <span class="spotlight-rank-tag ${isRank1 ? 'vip-tag' : ''}">#${p.spotlightRank} • ${metric}</span>
       <span class="spotlight-name">${projTitle}</span>
       <span class="spotlight-city">by ${p.name} • ${p.city}</span>
     </div>

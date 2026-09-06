@@ -81,6 +81,24 @@
   transform: translateY(-2px);
 }
 
+.spotlight-card-item.rank-1-vip {
+  background: linear-gradient(135deg, rgba(42, 32, 16, 0.95), rgba(24, 18, 10, 0.92));
+  border: 1.5px solid #F59E0B;
+  box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+  position: relative;
+}
+.spotlight-card-item.rank-1-vip .vip-tag {
+  background: rgba(245, 158, 11, 0.25);
+  color: #FCD34D;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+.spotlight-card-item.rank-1-vip .spotlight-avatar {
+  font-size: 16px;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
 .spotlight-card-item.is-offview {
   opacity: 0.42;
   filter: saturate(0.4);

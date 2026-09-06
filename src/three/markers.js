@@ -133,16 +133,20 @@ export function registerTier5Profile(p) {
   registerNewProfile(p);
   p._stalkQuat = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), p.normal);
 
-  // Shift other ranks down so new claimed project takes #1
-  tier5Profiles.forEach(item => {
-    if (item.id !== p.id && typeof item.spotlightRank === 'number') {
-      item.spotlightRank++;
-    }
+  // Remove existing instance if already present
+  const existingIdx = tier5Profiles.findIndex(x => x.id === p.id || (p.remoteId && x.remoteId === p.remoteId));
+  if (existingIdx >= 0) {
+    tier5Profiles.splice(existingIdx, 1);
+  }
+
+  // Place newly claimed or loaded #1 at the very top
+  tier5Profiles.unshift(p);
+
+  // Re-number ranks cleanly: 1, 2, 3...
+  tier5Profiles.forEach((item, idx) => {
+    item.spotlightRank = idx + 1;
   });
 
-  const existingIdx = tier5Profiles.findIndex(x => x.id === p.id);
-  if (existingIdx >= 0) tier5Profiles.splice(existingIdx, 1);
-  tier5Profiles.unshift(p);
   return p;
 }
 const stalkGeo = new THREE.CylinderGeometry(0.3, 0.08, 14, 8);
