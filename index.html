@@ -28,6 +28,7 @@
         <li><a class="nav-link" data-nav="categories">Projects</a></li>
         <li><a class="nav-link" data-nav="how-it-works">How It Works</a></li>
         <li><a class="nav-link" data-nav="pricing">Spotlights</a></li>
+        <li><a class="nav-link admin-nav-link" id="nav-btn-approvals" title="Admin Approvals Dashboard">🛡️ Approvals <span class="approvals-badge" id="approvals-count-badge" style="display: none;">0</span></a></li>
         <li><a class="nav-link" data-nav="sign-in">Sign In</a></li>
       </ul>
     </div>
@@ -46,6 +47,7 @@
           <span class="account-caret">▾</span>
         </button>
         <div class="account-menu" id="account-menu" role="menu" hidden>
+          <button class="account-menu-item" id="menu-approvals" role="menuitem">🛡️ Admin Approvals</button>
           <button class="account-menu-item" id="menu-my-projects" role="menuitem">My Projects</button>
           <button class="account-menu-item" id="menu-submit" role="menuitem">Submit a Project</button>
           <button class="account-menu-item danger" id="menu-sign-out" role="menuitem">Sign Out</button>
@@ -535,16 +537,16 @@
           <div class="form-group flex-1">
             <label for="claim-celestial-body">Select Celestial Spot to Claim *</label>
             <select id="claim-celestial-body" style="border-color: #F59E0B; background: rgba(245, 158, 11, 0.08); font-weight: 700; color: #FEF3C7;">
-              <option value="sun" selected>☀️ The Sun — #1 Supreme Sponsor (Center of the Galaxy) • ₹19,999</option>
-              <option value="jupiter">🪐 Jupiter — VIP Spot #2 (The Tech Titan) • ₹11,999</option>
-              <option value="saturn">🪐 Saturn — VIP Spot #3 (Ringed Majesty) • ₹9,999</option>
-              <option value="mars">🔴 Mars — VIP Spot #4 (Frontier Builder) • ₹6,999</option>
-              <option value="venus">💎 Venus — VIP Spot #5 (Morning Star) • ₹4,999</option>
-              <option value="mercury">⚡ Mercury — VIP Spot #6 (Speed Demon) • ₹4,999</option>
-              <option value="moon">🌕 The Moon — VIP Spot #7 (Orbital Companion) • ₹3,999</option>
-              <option value="neptune">🔵 Neptune — VIP Spot #8 (Deep Azure Giant) • ₹2,999</option>
-              <option value="uranus">🌀 Uranus — VIP Spot #9 (Cyan Ice Giant) • ₹2,999</option>
-              <option value="pluto">❄️ Pluto Outpost — VIP Spot #10 (Outer Frontier) • ₹2,499</option>
+              <option value="sun" selected>☀️ The Sun — #1 Supreme Sponsor (Center of the Galaxy) • ₹999 (Free Beta)</option>
+              <option value="jupiter">🪐 Jupiter — VIP Spot #2 (The Tech Titan) • ₹999 (Free Beta)</option>
+              <option value="saturn">🪐 Saturn — VIP Spot #3 (Ringed Majesty) • ₹999 (Free Beta)</option>
+              <option value="mars">🔴 Mars — VIP Spot #4 (Frontier Builder) • ₹499 (Free Beta)</option>
+              <option value="venus">💎 Venus — VIP Spot #5 (Morning Star) • ₹499 (Free Beta)</option>
+              <option value="mercury">⚡ Mercury — VIP Spot #6 (Speed Demon) • ₹499 (Free Beta)</option>
+              <option value="moon">🌕 The Moon — VIP Spot #7 (Orbital Companion) • ₹299 (Free Beta)</option>
+              <option value="neptune">🔵 Neptune — VIP Spot #8 (Deep Azure Giant) • ₹299 (Free Beta)</option>
+              <option value="uranus">🌀 Uranus — VIP Spot #9 (Cyan Ice Giant) • ₹299 (Free Beta)</option>
+              <option value="pluto">❄️ Pluto Outpost — VIP Spot #10 (Outer Frontier) • ₹99 (Free Beta)</option>
             </select>
           </div>
         </div>
@@ -608,79 +610,75 @@
           </div>
         </div>
 
-        <div class="form-section-title">02. Instant Checkout • ₹9,999 (~$119)</div>
+        <div class="form-section-title">02. Beta Access • 100% Free to Claim</div>
 
-        <!-- Payment Method Tabs -->
-        <div class="payment-tabs" role="tablist">
-          <button type="button" class="payment-tab active" id="tab-pay-upi" role="tab">
-            <span>📱</span> UPI (GPay / PhonePe / Paytm / BHIM)
-          </button>
-          <button type="button" class="payment-tab" id="tab-pay-card" role="tab">
-            <span>💳</span> Credit / Debit Card
-          </button>
+        <!-- Beta Early Access Free Notice -->
+        <div class="beta-free-notice-card">
+          <div class="beta-free-badge">🎉 EARLY ACCESS BETA • 100% FREE</div>
+          <div class="beta-free-headline">Payment is bypassed during beta launch</div>
+          <p class="beta-free-desc">Official pricing (₹99 – ₹999) will activate soon. Anyone can claim any spot for free right now — all submissions go to the admin for review & approval!</p>
         </div>
 
-        <!-- UPI Pane -->
-        <div class="payment-pane active" id="pane-pay-upi">
-          <div class="upi-checkout-box">
-            <div class="upi-qr-card">
-              <div class="upi-qr-code" id="upi-qr-code">
-                <!-- Injected via claim-modal.js -->
-              </div>
-              <span class="qr-scan-hint">Scan with GPay, PhonePe, Paytm, BHIM or Cred</span>
-            </div>
-            <div class="upi-details">
-              <div class="upi-amount-row">
-                <span class="amount-label">Spotlight Amount:</span>
-                <span class="amount-val">₹9,999 <span class="tax-tag">incl. taxes</span></span>
-              </div>
-              <div class="upi-id-box">
-                <span class="upi-id-label">UPI ID:</span>
-                <code class="upi-id-code" id="upi-id-text">talentglobe@upi</code>
-                <button type="button" class="btn-copy-upi" id="btn-copy-upi">Copy</button>
-              </div>
-              <div class="form-group" style="margin-top: 6px;">
-                <label for="claim-utr" style="font-size: 11px; color: var(--accent-cool);">Transaction Ref / UTR (Optional for instant auto-verify):</label>
-                <input type="text" id="claim-utr" placeholder="12-digit UPI UTR" maxlength="16" />
-              </div>
-              <a href="upi://pay?pa=talentglobe@upi&pn=TalentGlobe&am=9999&cu=INR&tn=Spotlight-Rank1" class="btn-upi-intent" id="btn-upi-intent">
-                📱 Open UPI App to Pay ₹9,999
-              </a>
-            </div>
+        <!-- Disabled Payment Section -->
+        <div class="payment-section-disabled" style="opacity: 0.38; pointer-events: none; filter: grayscale(0.9); user-select: none; margin-top: 10px;">
+          <!-- Payment Method Tabs -->
+          <div class="payment-tabs" role="tablist">
+            <button type="button" class="payment-tab active" id="tab-pay-upi" role="tab" tabindex="-1">
+              <span>📱</span> UPI (Payment Bypassed)
+            </button>
+            <button type="button" class="payment-tab" id="tab-pay-card" role="tab" tabindex="-1">
+              <span>💳</span> Card (Payment Bypassed)
+            </button>
           </div>
-        </div>
 
-        <!-- Card Pane -->
-        <div class="payment-pane" id="pane-pay-card">
-          <div class="card-checkout-box">
-            <div class="form-group">
-              <label for="claim-card-num">Card Number</label>
-              <div class="card-input-wrap">
-                <input type="text" id="claim-card-num" placeholder="4242 •••• •••• 4242" maxlength="19" />
-                <span class="card-brand-badge" id="card-brand-badge">💳</span>
+          <!-- UPI Pane -->
+          <div class="payment-pane active" id="pane-pay-upi">
+            <div class="upi-checkout-box">
+              <div class="upi-qr-card">
+                <div class="upi-qr-code" id="upi-qr-code"></div>
+                <span class="qr-scan-hint">Bypassed during Beta</span>
+              </div>
+              <div class="upi-details">
+                <div class="upi-amount-row">
+                  <span class="amount-label">Spotlight Amount:</span>
+                  <span class="amount-val"><s style="color: #94A3B8;">₹999</s> <span style="color: #34D399; font-weight: 800;">₹0 FREE (BETA)</span></span>
+                </div>
+                <div class="upi-id-box">
+                  <span class="upi-id-label">Status:</span>
+                  <code class="upi-id-code">Free Beta Request</code>
+                </div>
               </div>
             </div>
-            <div class="form-row">
-              <div class="form-group flex-1">
-                <label for="claim-card-exp">Expiry (MM/YY)</label>
-                <input type="text" id="claim-card-exp" placeholder="MM/YY" maxlength="5" />
-              </div>
-              <div class="form-group flex-1">
-                <label for="claim-card-cvc">CVC / CVV</label>
-                <input type="text" id="claim-card-cvc" placeholder="123" maxlength="4" />
-              </div>
-            </div>
-            <div class="card-secure-hint">🔒 256-bit encrypted secure checkout</div>
           </div>
         </div>
 
         <div class="submit-form-actions" style="margin-top: 16px;">
           <button type="button" class="sub-btn-secondary" id="btn-cancel-claim">Cancel</button>
           <button type="submit" class="sub-btn-primary gold-glow-btn" id="btn-confirm-claim">
-            ⚡ Pay ₹9,999 & Claim #1 Spot
+            ✨ Claim Spot for Free (Submit for Admin Approval)
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Admin Approvals Dashboard Modal -->
+  <div class="submit-modal-backdrop" id="admin-approvals-modal">
+    <div class="submit-modal admin-approvals-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-approvals-heading">
+      <div class="submit-modal-header">
+        <div>
+          <span class="sub-badge gold-vip-badge">🛡️ ADMIN CONSOLE</span>
+          <h2 id="admin-approvals-heading" class="sub-title">Pending Project & Planet Approvals</h2>
+          <p class="sub-desc">Review submitted claims, verify project details, and approve them live on the 3D globe and celestial solar system.</p>
+        </div>
+        <button class="submit-close-btn" id="btn-close-admin-approvals" aria-label="Close">✕</button>
+      </div>
+      <div class="admin-approvals-list" id="admin-approvals-list">
+        <!-- Injected dynamically via admin-approvals.js -->
+      </div>
+      <div class="submit-form-actions" style="margin-top: 14px;">
+        <button type="button" class="sub-btn-secondary" onclick="document.getElementById('admin-approvals-modal').classList.remove('active'); document.body.style.overflow='';">Close Dashboard</button>
+      </div>
     </div>
   </div>
 

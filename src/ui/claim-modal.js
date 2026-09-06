@@ -2,6 +2,7 @@ import { geocodeLocation } from '../api/geocoding.js';
 import { saveProject } from '../api/supabase.js';
 import { registerTier5Profile } from '../three/markers.js';
 import { showToast } from './toast.js';
+import { addPendingClaim } from './admin-approvals.js';
 
 let modalBackdrop = null;
 let formEl = null;
@@ -251,38 +252,30 @@ export function initClaimModal({ openProfileCard, flyCameraToCoordinates, onProj
           }
         };
 
-        // 3. Save to Supabase (and local storage fallback)
-        const result = await saveProject(profile);
-        const saved = result.profile || profile;
+        // 3. Save as pending claim for Admin Approval
+        profile.id = `claim-${Date.now()}`;
+        profile.status = 'pending';
+        profile.claimedAt = new Date().toISOString();
 
-        // 4. Register as Tier 5 on Globe & Spotlight carousel
-        registerTier5Profile(saved);
+        addPendingClaim(profile);
 
-        // 5. Clean up modal
+        // Also save to Supabase / local mirror
+        saveProject(profile).catch(() => {});
+
+        // 4. Clean up modal
         formEl.reset();
         closeClaimModal();
-        if (_onProjectsChanged) _onProjectsChanged();
 
-        // 6. Celebration Toast
-        showToast(`👑 Congratulations! "${title}" is now live as the #1 Gold Spotlight on Talent Globe!`, 6000);
-
-        // 7. Fly camera to coordinates
-        if (_flyCameraToCoordinates) {
-          _flyCameraToCoordinates(saved.lat, saved.lon, 190);
-        }
-
-        // 8. Open showcase card
-        setTimeout(() => {
-          if (_openProfileCard) _openProfileCard(saved);
-        }, 1500);
+        // 5. Celebration & Status Toast
+        showToast(`🎉 Free Claim submitted for ${chosenCelestial.name}! Waiting for Admin Approval.`, 5500);
 
       } catch (err) {
         console.error('[Claim Modal] Error claiming spotlight:', err);
-        showToast('Error activating spotlight. Please try again.', 4000);
+        showToast('Error submitting claim. Please try again.', 4000);
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.textContent = '⚡ Pay & Claim #1 Spot Now';
+          submitBtn.textContent = '✨ Claim Spot for Free (Submit for Admin Approval)';
         }
       }
     });

@@ -19,6 +19,7 @@ import { initAuthModal } from './ui/auth-modal.js';
 import { initInfoModal } from './ui/info-modal.js';
 import { initMyProjects, render as renderMyProjects } from './ui/my-projects.js';
 import { initClaimModal, openClaimModal } from './ui/claim-modal.js';
+import { initAdminApprovals } from './ui/admin-approvals.js';
 import { celestialSystem } from './three/celestial-system.js';
 import { flyCameraToCelestial, trackCelestialMesh, clearCelestialTracking, updateCelestialCameraTracking } from './three/camera-flight.js';
 import { initCelestialUI, openCelestialCard, closeCelestialCard, updateCelestialModalPosition } from './ui/celestial-modal.js';
@@ -140,6 +141,7 @@ initClaimModal({
   }
 });
 initHud();
+initAdminApprovals();
 
 // 5. Initialize Hollywood-grade Celestial Solar System
 celestialSystem.init(canvasContainer, (cfg, profile) => {

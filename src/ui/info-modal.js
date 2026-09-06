@@ -31,10 +31,10 @@ const CONTENT = {
     ]
   },
   spotlights: {
-    badge: 'CELESTIAL & SPOTLIGHT TIERS',
+    badge: '🎉 EARLY ACCESS • FREE TO CLAIM',
     heading: 'Showcase tiers',
-    desc: 'Every pin on Earth is 100% free. Paid tiers unlock premier placement, spotlight dock rotation, and celestial planet real estate.',
-    cta: '👑 Claim Planet / Spotlight Spot',
+    desc: 'Pricing (₹0, ₹99, ₹299, ₹499, ₹999) will activate soon. For now, all spots & planets are 100% FREE to claim during our beta launch! All claims are reviewed and approved by admin.',
+    cta: '✨ Claim Any Spot for Free (Early Beta)',
     actionType: 'claim',
     steps: [
       { 
@@ -47,25 +47,29 @@ const CONTENT = {
         title: 'Verified', 
         desc: 'Verified gold badge on your profile card and priority in search results.', 
         price: '₹99',
+        isFreeBeta: true,
         action: 'claim'
       },
       { 
         title: 'Featured Marker', 
         desc: 'Larger illuminated pulsing marker with a persistent name label on the globe.', 
-        price: '₹499',
+        price: '₹299',
+        isFreeBeta: true,
         action: 'claim'
       },
       { 
         title: 'Trending Spotlight', 
         desc: 'Guaranteed rotation through the Front of Globe spotlight dock carousel.', 
-        price: '₹1,999',
+        price: '₹499',
+        isFreeBeta: true,
         action: 'claim'
       },
       { 
         title: '👑 Celestial VIP Planet & The Sun', 
         desc: 'Own a 1-of-1 Planet (The Sun, Jupiter, Saturn) in the 3D Solar System with orbital camera tracking, laser tether & dedicated showcase.', 
-        price: 'from ₹2,499',
+        price: '₹999',
         isVip: true,
+        isFreeBeta: true,
         action: 'claim',
         planet: 'sun'
       }
@@ -114,10 +118,18 @@ export function openInfoModal(key) {
       row.append(index, inner);
 
       if (step.price) {
-        const price = document.createElement('span');
-        price.className = 'info-step-price';
-        price.textContent = step.price;
-        row.appendChild(price);
+        const priceWrap = document.createElement('div');
+        priceWrap.className = 'info-step-price-wrap';
+
+        if (step.isFreeBeta) {
+          priceWrap.innerHTML = `
+            <span class="info-price-strike"><s>${step.price}</s></span>
+            <span class="info-price-free-tag">FREE (BETA)</span>
+          `;
+        } else {
+          priceWrap.innerHTML = `<span class="info-step-price">${step.price}</span>`;
+        }
+        row.appendChild(priceWrap);
       }
 
       row.addEventListener('click', () => {

@@ -486,3 +486,259 @@
   height: 1px;
   background: var(--border-subtle);
 }
+
+/* --- Early Beta Free Badges & Showcase Tiers Pricing ----------------------- */
+.info-step-price-wrap {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.info-price-strike {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.info-price-free-tag {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(52, 211, 153, 0.15);
+  border: 1px solid rgba(52, 211, 153, 0.4);
+  color: #34D399;
+  letter-spacing: 0.04em;
+}
+
+/* --- Claim Modal Beta Free Notice Card ------------------------------------ */
+.beta-free-notice-card {
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.1), rgba(16, 185, 129, 0.04));
+  border: 1.5px solid rgba(52, 211, 153, 0.35);
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.beta-free-badge {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #34D399;
+  color: #064E3B;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+
+.beta-free-headline {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ECFDF5;
+  margin-bottom: 4px;
+}
+
+.beta-free-desc {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: #A7F3D0;
+  margin: 0;
+}
+
+/* --- Admin Approvals Dashboard Modal -------------------------------------- */
+.admin-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #FBBF24 !important;
+  font-weight: 700 !important;
+}
+
+.approvals-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 17px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #EF4444;
+  color: #FFFFFF;
+  font-size: 9.5px;
+  font-weight: 800;
+}
+
+.admin-approvals-dialog {
+  max-width: 640px !important;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-approvals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.admin-claim-card {
+  padding: 16px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1.5px solid rgba(245, 158, 11, 0.35);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color 0.2s ease;
+}
+
+.admin-claim-card:hover {
+  border-color: #F59E0B;
+}
+
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-spot-badge {
+  font-family: var(--font-mono, monospace);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.2);
+  border: 1px solid #F59E0B;
+  color: #FEF3C7;
+}
+
+.admin-time-tag {
+  font-size: 10.5px;
+  color: #94A3B8;
+}
+
+.admin-card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-project-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.admin-cat-pill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #CBD5E1;
+}
+
+.admin-project-tagline {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #94A3B8;
+}
+
+.admin-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 11.5px;
+  color: #CBD5E1;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.admin-meta-row a {
+  color: #38BDF8;
+  text-decoration: none;
+}
+
+.admin-meta-row a:hover {
+  text-decoration: underline;
+}
+
+.admin-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-admin-approve {
+  flex: 2;
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #10B981, #059669);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.btn-admin-approve:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.5);
+}
+
+.btn-admin-reject {
+  flex: 1;
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.1);
+  color: #F87171;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.btn-admin-reject:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #FFFFFF;
+}
+
+.admin-empty-state {
+  text-align: center;
+  padding: 36px 16px;
+  color: #94A3B8;
+}
+
+.admin-empty-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.admin-empty-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #F8FAFC;
+  margin-bottom: 6px;
+}
+
+.admin-empty-desc {
+  font-size: 12px;
+  line-height: 1.5;
+  max-width: 380px;
+  margin: 0 auto;
+}
