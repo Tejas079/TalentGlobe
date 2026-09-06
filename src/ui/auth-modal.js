@@ -195,8 +195,7 @@ export function initAuthModal({ onChange } = {}) {
   // OAuth providers. These navigate away, so the button only needs to show it
   // is working until the browser leaves the page.
   const providerButtons = [
-    ['btn-oauth-google', 'google', 'Google'],
-    ['btn-oauth-linkedin', 'linkedin', 'LinkedIn']
+    ['btn-oauth-google', 'google', 'Google']
   ];
   providerButtons.forEach(([id, providerKey, label]) => {
     const btn = document.getElementById(id);

@@ -207,13 +207,11 @@ export async function signIn(email, password) {
 }
 
 /* -------------------------------------------------------------------------- */
-/* OAuth (Google, LinkedIn)                                                   */
+/* OAuth (Google)                                                             */
 /* -------------------------------------------------------------------------- */
 
 export const OAUTH_PROVIDERS = {
-  google: { id: 'google', label: 'Google' },
-  // Supabase's legacy `linkedin` provider is retired; `linkedin_oidc` is current.
-  linkedin: { id: 'linkedin_oidc', label: 'LinkedIn' }
+  google: { id: 'google', label: 'Google' }
 };
 
 /** Where the provider should land the visitor again — this page, no hash. */
