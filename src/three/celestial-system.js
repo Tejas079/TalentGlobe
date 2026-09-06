@@ -526,12 +526,42 @@ export class CelestialSystem {
     this.group.add(nebulaMesh);
   }
 
+  getProfileForCelestial(cfg) {
+    if (!cfg) return null;
+
+    // 1. By explicit spotlightRank (Rank 1 = Sun, Rank 2 = Jupiter, etc.)
+    const byRank = PROFILES_DATA.find(p => p.spotlightRank === cfg.rank);
+    if (byRank) return byRank;
+
+    // 2. By tier 5 profiles array
+    const t5 = PROFILES_DATA.filter(p => p.tier === 5);
+    if (t5[cfg.rank - 1]) return t5[cfg.rank - 1];
+
+    // 3. Fallback by configured profileId
+    if (cfg.profileId) {
+      const byId = PROFILES_DATA.find(p => p.id === cfg.profileId);
+      if (byId) return byId;
+    }
+
+    // 4. Special fallback for The Sun (#1 Spot) -> TRIPEZY
+    if (cfg.rank === 1) {
+      const tripezy = PROFILES_DATA.find(p => 
+        (p.project?.title && p.project.title.toLowerCase().includes('tripezy')) ||
+        (p.title && p.title.toLowerCase().includes('tripezy')) ||
+        (p.name && p.name.toLowerCase().includes('tejas'))
+      );
+      if (tripezy) return tripezy;
+    }
+
+    return null;
+  }
+
   createLabelElement(cfg) {
     const el = document.createElement('div');
     el.className = 'celestial-billboard-label' + (cfg.rank === 1 ? ' sun-label' : '');
 
-    // Match profile title
-    const profile = PROFILES_DATA.find(p => p.id === cfg.profileId) || {};
+    // Match profile title dynamically
+    const profile = this.getProfileForCelestial(cfg) || {};
     const projName = profile.project?.title || cfg.name;
 
     el.innerHTML = `
@@ -651,10 +681,23 @@ export class CelestialSystem {
   }
 
   selectCelestialBody(cfg) {
-    const profile = PROFILES_DATA.find(p => p.id === cfg.profileId);
+    const profile = this.getProfileForCelestial(cfg);
     if (this.onSelectPlanet) {
       this.onSelectPlanet(cfg, profile);
     }
+  }
+
+  refreshLabels() {
+    this.planets.forEach((mesh) => {
+      const cfg = mesh.userData?.config;
+      const labelEl = mesh.userData?.labelEl;
+      if (cfg && labelEl) {
+        const profile = this.getProfileForCelestial(cfg) || {};
+        const projName = profile.project?.title || cfg.name;
+        const nameSpan = labelEl.querySelector('.celestial-name');
+        if (nameSpan) nameSpan.textContent = projName;
+      }
+    });
   }
 
   getPlanetByRank(rank) {

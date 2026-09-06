@@ -41,8 +41,9 @@ export function initCelestialUI(celestialSystemInstance) {
   const btnClaim = document.getElementById('celestial-claim-trigger');
   if (btnClaim) {
     btnClaim.addEventListener('click', () => {
+      const targetBody = activeCfg?.key || 'sun';
       closeCelestialCard();
-      openClaimModal();
+      openClaimModal(targetBody);
     });
   }
 
@@ -128,6 +129,11 @@ export function openCelestialCard(cfg, profile, mesh = null) {
   activeCfg = cfg;
   activeMesh = mesh || (_celestialSystem ? _celestialSystem.getMeshByRank(cfg.rank) : null);
 
+  // Dynamic fallback: resolve profile through celestialSystem if not already provided
+  if (!profile && _celestialSystem && typeof _celestialSystem.getProfileForCelestial === 'function') {
+    profile = _celestialSystem.getProfileForCelestial(cfg);
+  }
+
   const badgeEl = document.getElementById('celestial-badge');
   const iconEl = document.getElementById('celestial-icon');
   const nameEl = document.getElementById('celestial-name');
@@ -136,6 +142,7 @@ export function openCelestialCard(cfg, profile, mesh = null) {
   const projFounderEl = document.getElementById('celestial-proj-founder');
   const projTaglineEl = document.getElementById('celestial-proj-tagline');
   const demoLinkEl = document.getElementById('celestial-demo-link');
+  const claimBtnEl = document.getElementById('celestial-claim-trigger');
 
   if (badgeEl) badgeEl.textContent = cfg.badge;
   if (iconEl) iconEl.textContent = cfg.symbol;
@@ -149,13 +156,19 @@ export function openCelestialCard(cfg, profile, mesh = null) {
     if (projTaglineEl) projTaglineEl.textContent = proj.tagline || profile.pitch || 'Leading innovation in the global tech constellation.';
     if (demoLinkEl) {
       demoLinkEl.href = proj.demoUrl || 'https://www.tripezy.in/';
-      demoLinkEl.style.display = 'flex';
+      demoLinkEl.style.display = 'inline-flex';
+    }
+    if (claimBtnEl) {
+      claimBtnEl.innerHTML = `<span>👑</span> Claim / Sponsor Spot`;
     }
   } else {
     if (projNameEl) projNameEl.textContent = 'Available for Sponsorship';
     if (projFounderEl) projFounderEl.textContent = 'Claim this planet spot for your startup or open-source build';
     if (projTaglineEl) projTaglineEl.textContent = 'Exclusive 1-of-1 cosmic real estate orbiting the global tech map.';
     if (demoLinkEl) demoLinkEl.style.display = 'none';
+    if (claimBtnEl) {
+      claimBtnEl.innerHTML = `<span>👑</span> Claim Planet Spot`;
+    }
   }
 
   cardEl.classList.add('active');

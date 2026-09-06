@@ -123,6 +123,7 @@ initSubmitModal({
     renderMyProjects();
     refreshFilters();
     updateDynamicSpotlights((profile) => openProfileCard(profile));
+    celestialSystem.refreshLabels();
   }
 });
 initClaimModal({
@@ -132,6 +133,7 @@ initClaimModal({
     renderMyProjects();
     refreshFilters();
     updateDynamicSpotlights((profile) => openProfileCard(profile));
+    celestialSystem.refreshLabels();
   }
 });
 initHud();
