@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TALENT GLOBE • Advertise Yourself to the World</title>
+  <meta name="description" content="Put your professional skills on the 3D map. Get discovered globally on the interactive talent billboard.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+  <!-- 3D WebGL Canvas Container -->
+  <div id="canvas-container"></div>
+
+  <!-- Screen-Space Markers Layer -->
+  <div id="markers-container"></div>
+
+  <!-- Top Navigation & Brand Header -->
+  <header class="top-nav">
+    <div class="nav-left">
+      <a class="brand-logo" id="brand-logo-btn">
+        <span class="brand-orb"></span>
+        <span>TALENT GLOBE</span>
+      </a>
+      <ul class="nav-links">
+        <li><a class="nav-link active" data-nav="explore">Explore</a></li>
+        <li><a class="nav-link" data-nav="categories">Projects</a></li>
+        <li><a class="nav-link" data-nav="how-it-works">How It Works</a></li>
+        <li><a class="nav-link" data-nav="pricing">Spotlights</a></li>
+        <li><a class="nav-link" data-nav="sign-in">Sign In</a></li>
+      </ul>
+    </div>
+    <div class="nav-right">
+      <div class="live-stats-badge">
+        <span class="live-dot"></span>
+        <span id="live-stats-text">12,842 projects deployed • 187 countries represented</span>
+      </div>
+      <button class="btn-advertise-nav" id="btn-advertise-nav">Submit Project</button>
+
+      <!-- Signed-in account chip (hidden while signed out) -->
+      <div class="account-chip" id="account-chip" hidden>
+        <button class="account-chip-btn" id="account-chip-btn" aria-haspopup="menu" aria-expanded="false">
+          <span class="account-avatar" id="account-avatar">--</span>
+          <span class="account-email" id="account-email"></span>
+          <span class="account-caret">▾</span>
+        </button>
+        <div class="account-menu" id="account-menu" role="menu" hidden>
+          <button class="account-menu-item" id="menu-my-projects" role="menuitem">My Projects</button>
+          <button class="account-menu-item" id="menu-submit" role="menuitem">Submit a Project</button>
+          <button class="account-menu-item danger" id="menu-sign-out" role="menuitem">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Headline & Supporting Copy -->
+  <div class="hero-banner" id="hero-banner">
+    <div class="hero-eyebrow">Worldwide Project & Maker Map</div>
+    <h1 class="hero-headline">Discover What the World is Building.</h1>
+    <p class="hero-copy">Explore breakthrough projects on the 3D globe and connect directly with the engineers, designers, and founders who built them.</p>
+    <div class="hero-actions">
+      <button class="btn-hero-primary" id="btn-advertise-hero">Submit Your Project</button>
+      <button class="btn-hero-secondary" id="btn-explore-hero">Explore Projects</button>
+    </div>
+  </div>
+
+  <!-- Search & Category Discovery Overlay -->
+  <aside class="search-discovery-panel" id="search-discovery-panel">
+    <div class="search-bar-card">
+      <input type="text" class="search-input" id="search-input" placeholder="Search projects, tech stack, makers, cities..." autocomplete="off">
+      <span class="search-shortcut-tag">/</span>
+      <button class="search-clear-btn" id="search-clear-btn" title="Clear search">✕</button>
+    </div>
+
+    <!-- 10 Project Category Pills -->
+    <div class="category-pills-container" id="category-pills">
+      <span class="category-pill active" data-cat="All">All Projects</span>
+      <span class="category-pill" data-cat="AI & Agents">AI & Agents</span>
+      <span class="category-pill" data-cat="DevTools">DevTools</span>
+      <span class="category-pill" data-cat="SaaS & B2B">SaaS & B2B</span>
+      <span class="category-pill" data-cat="Creative & 3D">Creative & 3D</span>
+      <span class="category-pill" data-cat="Fintech">Fintech</span>
+      <span class="category-pill" data-cat="Systems & Rust">Systems & Rust</span>
+      <span class="category-pill" data-cat="Open Source">Open Source</span>
+      <span class="category-pill" data-cat="Mobile & Web">Mobile & Web</span>
+      <span class="category-pill" data-cat="Cybersecurity">Cybersecurity</span>
+      <span class="category-pill" data-cat="Climate Tech">Climate Tech</span>
+    </div>
+
+    <!-- Secondary Filters Drawer -->
+    <div class="secondary-filters-toggle" id="filters-toggle-btn">
+      <span>Filters: Country, City, Tech Stack...</span>
+      <span id="filters-toggle-icon">▼</span>
+    </div>
+
+    <div class="secondary-filters-drawer" id="secondary-filters-drawer">
+      <div class="filter-row">
+        <label class="filter-label">Country</label>
+        <select class="filter-select" id="filter-country">
+          <option value="">All Countries</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <label class="filter-label">City</label>
+        <select class="filter-select" id="filter-city">
+          <option value="">All Cities</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <label class="filter-label">Maker Availability</label>
+        <select class="filter-select" id="filter-availability">
+          <option value="">Any Availability</option>
+          <option value="AVAILABLE FOR OPPORTUNITIES">Available for Hire & Contracting</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <label class="filter-label">Experience</label>
+        <select class="filter-select" id="filter-experience">
+          <option value="">Any Experience</option>
+          <option value="junior">Under 5 years</option>
+          <option value="senior">5 to 8 years</option>
+          <option value="principal">8+ years</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <label class="filter-label">Tech Stack</label>
+        <select class="filter-select" id="filter-skills">
+          <option value="">All Technologies</option>
+        </select>
+      </div>
+      <div class="filter-status-row">
+        <span id="filter-count-label">Showing 120 projects</span>
+        <button class="reset-filters-btn" id="reset-filters-btn">Reset All</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Front of Globe • Live Spotlight Dock -->
+  <section class="spotlight-dock" id="spotlight-dock">
+    <div class="spotlight-dock-header">
+      <div class="spotlight-dock-title">
+        <span class="live-dot"></span>
+        <span>Front of Globe • 20 Featured Projects</span>
+      </div>
+      <div class="spotlight-dock-desc">Active builds in your current view</div>
+    </div>
+    <div class="spotlight-carousel" id="spotlight-carousel">
+      <!-- Injected dynamically based on camera-facing Tier 5 profiles -->
+    </div>
+  </section>
+
+  <!-- Floating Glassmorphism Project & Maker Ad Card -->
+  <article class="profile-card-modal" id="profile-card">
+    <div class="card-header-row">
+      <div class="card-tier-wrap">
+        <span class="card-tier-pill" id="card-tier-tag">#1 GLOBAL SPOTLIGHT</span>
+        <span class="card-badge-pill" id="card-badge-tag">Production Live</span>
+      </div>
+      <button class="card-close-btn" id="card-close-btn" title="Close card">✕</button>
+    </div>
+
+    <!-- Flagship Project Showcase Inset Box -->
+    <div class="card-project-box" id="card-project-box">
+      <div class="card-project-header">
+        <div class="card-project-headings">
+          <h2 class="card-project-title" id="card-project-title">FinPulse Core</h2>
+          <span class="card-project-category" id="card-project-category">Fintech</span>
+        </div>
+        <span class="card-project-metric" id="card-project-metric">40M+ daily tx</span>
+      </div>
+      <p class="card-project-tagline" id="card-project-tagline">
+        High-throughput payment settlement engine handling 40M+ daily transactions.
+      </p>
+      <div class="card-project-stack" id="card-project-stack">
+        <!-- Tech stack tags -->
+      </div>
+    </div>
+
+    <!-- Maker Identity Row -->
+    <div class="card-maker-row">
+      <div class="card-avatar" id="card-avatar">RS</div>
+      <div class="card-maker-info">
+        <div class="card-maker-name-row">
+          <span class="card-name" id="card-name">Rahul Sharma</span>
+          <span class="card-maker-badge">Maker</span>
+        </div>
+        <div class="card-role" id="card-role">Full-Stack Architect & Distributed Systems</div>
+        <div class="card-location" id="card-location">Pune, India • 18.52° N, 73.86° E</div>
+      </div>
+    </div>
+
+    <!-- Availability & Hire Meta Row -->
+    <div class="card-meta-row">
+      <div class="card-availability">
+        <span class="live-dot"></span>
+        <span id="card-availability-text">AVAILABLE FOR HIRE & CONTRACTS</span>
+      </div>
+      <div class="card-experience" id="card-experience">8 years exp</div>
+    </div>
+
+    <div class="card-actions">
+      <button class="card-btn-primary" id="card-btn-demo">⚡ Live Demo</button>
+      <button class="card-btn-secondary" id="card-btn-contact">✉ Hire / Contact Maker</button>
+      <button class="card-btn-edit" id="card-btn-edit" hidden>✎ Edit</button>
+    </div>
+  </article>
+
+  <!-- Project Submission Modal (Creator Onboarding) -->
+  <div class="submit-modal-backdrop" id="submit-modal-backdrop">
+    <div class="submit-modal" id="submit-modal" role="dialog" aria-modal="true" aria-labelledby="sub-heading">
+      <div class="submit-modal-header">
+        <div>
+          <span class="sub-badge" id="sub-badge">LAUNCH YOUR PIN</span>
+          <h2 id="sub-heading" class="sub-title">Feature Your Project & Profile</h2>
+          <p class="sub-desc" id="sub-desc">Put your build on the global 3D map. Free, instant, and discoverable worldwide.</p>
+        </div>
+        <button class="submit-close-btn" id="btn-close-submit" aria-label="Close form">✕</button>
+      </div>
+
+      <form id="submit-project-form" class="submit-form">
+        <!-- Project Information -->
+        <div class="form-section-title">01. Flagship Project Details</div>
+        
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="sub-title">Project Name *</label>
+            <input type="text" id="sub-title" placeholder="e.g. HyperFlow" required maxlength="40" />
+          </div>
+          <div class="form-group flex-1">
+            <label for="sub-category">Category *</label>
+            <select id="sub-category" required>
+              <option value="AI & Agents">AI & Agents</option>
+              <option value="DevTools" selected>DevTools</option>
+              <option value="SaaS & B2B">SaaS & B2B</option>
+              <option value="Systems & Rust">Systems & Rust</option>
+              <option value="Creative & 3D">Creative & 3D</option>
+              <option value="Fintech">Fintech</option>
+              <option value="Open Source">Open Source</option>
+              <option value="Mobile & Web">Mobile & Web</option>
+              <option value="Cybersecurity">Cybersecurity</option>
+              <option value="Climate Tech">Climate Tech</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="sub-tagline">Project Tagline * (One sentence value pitch)</label>
+          <input type="text" id="sub-tagline" placeholder="e.g. Distributed real-time stream engine built in Rust" required maxlength="120" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="sub-demo-url">Live Demo or GitHub URL</label>
+            <input type="url" id="sub-demo-url" placeholder="https://github.com/you/project" />
+          </div>
+          <div class="form-group flex-1">
+            <label for="sub-metric">Key Metric / Badge</label>
+            <input type="text" id="sub-metric" placeholder="e.g. 14k GitHub Stars or 5k Users" maxlength="30" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="sub-tech">Tech Stack (comma separated)</label>
+          <input type="text" id="sub-tech" placeholder="e.g. Rust, WebAssembly, React, Docker" />
+        </div>
+
+        <!-- Maker Information -->
+        <div class="form-section-title">02. Maker Identity & Coordinates</div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="sub-maker-name">Maker / Founder Name *</label>
+            <input type="text" id="sub-maker-name" placeholder="e.g. Alex Rivera" required maxlength="40" />
+          </div>
+          <div class="form-group flex-1">
+            <label for="sub-maker-role">Primary Role / Title</label>
+            <input type="text" id="sub-maker-role" placeholder="e.g. Systems Engineer & Founder" maxlength="40" />
+          </div>
+        </div>
+
+        <!-- Location Privacy / Remote Builder Option -->
+        <div class="remote-toggle-box">
+          <label class="remote-toggle-label" for="sub-is-remote">
+            <input type="checkbox" id="sub-is-remote" />
+            <span class="remote-toggle-switch"></span>
+            <div class="remote-toggle-info">
+              <span class="remote-toggle-title">🌐 Work Remotely / Hide Exact City</span>
+              <span class="remote-toggle-subtitle">Keep exact location private. Pinned to country centroid or global orbit.</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="form-row" id="row-location-inputs">
+          <div class="form-group flex-1" id="group-sub-city">
+            <label for="sub-city" id="lbl-sub-city">City *</label>
+            <input type="text" id="sub-city" placeholder="e.g. Bengaluru" required />
+          </div>
+          <div class="form-group flex-1" id="group-sub-country">
+            <label for="sub-country" id="lbl-sub-country">Country *</label>
+            <input type="text" id="sub-country" placeholder="e.g. India (or Worldwide)" required />
+          </div>
+        </div>
+
+        <!-- Real-time geocoding pill -->
+        <div class="submit-coord-preview" id="submit-coord-preview">
+          📍 Type your city to auto-detect coordinates on the 3D globe
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="sub-email">Contact Email or X/GitHub</label>
+            <input type="text" id="sub-email" placeholder="you@domain.com or @twitter" />
+          </div>
+          <div class="form-group flex-1">
+            <label for="sub-experience">Experience</label>
+            <input type="text" id="sub-experience" placeholder="e.g. 4 years exp" maxlength="20" />
+          </div>
+        </div>
+
+        <div class="submit-form-actions">
+          <button type="button" class="sub-btn-secondary" id="btn-cancel-submit">Cancel</button>
+          <button type="submit" class="sub-btn-primary" id="btn-submit-project">🚀 Launch Pin on Globe</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Account Access Modal (Sign In / Create Account) -->
+  <div class="submit-modal-backdrop" id="auth-modal-backdrop">
+    <div class="submit-modal auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-heading">
+      <div class="submit-modal-header">
+        <div>
+          <span class="sub-badge">MAKER ACCESS</span>
+          <h2 id="auth-heading" class="sub-title">Sign in to Talent Globe</h2>
+          <p class="sub-desc" id="auth-desc">Sign in to launch a project pin and edit it any time.</p>
+        </div>
+        <button class="submit-close-btn" id="btn-close-auth" aria-label="Close sign in">✕</button>
+      </div>
+
+      <div class="auth-tabs" role="tablist">
+        <button class="auth-tab active" id="auth-tab-signin" role="tab" aria-selected="true">Sign In</button>
+        <button class="auth-tab" id="auth-tab-signup" role="tab" aria-selected="false">Create Account</button>
+      </div>
+
+      <div class="auth-providers">
+        <button type="button" class="auth-provider-btn" id="btn-oauth-google">
+          <svg class="auth-provider-icon" viewBox="0 0 48 48" aria-hidden="true">
+            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/>
+            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+          </svg>
+          <span>Continue with Google</span>
+        </button>
+        <button type="button" class="auth-provider-btn" id="btn-oauth-linkedin">
+          <svg class="auth-provider-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#0A66C2" d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/>
+          </svg>
+          <span>Continue with LinkedIn</span>
+        </button>
+      </div>
+
+      <div class="auth-divider"><span>or use email</span></div>
+
+      <form id="auth-form" class="submit-form">
+        <div class="form-group">
+          <label for="auth-email">Email</label>
+          <input type="email" id="auth-email" placeholder="you@domain.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="auth-password">Password</label>
+          <input type="password" id="auth-password" placeholder="At least 6 characters" required minlength="6" autocomplete="current-password" />
+        </div>
+
+        <div class="auth-message" id="auth-message" hidden></div>
+
+        <div class="submit-form-actions">
+          <button type="button" class="sub-btn-secondary" id="btn-cancel-auth">Cancel</button>
+          <button type="submit" class="sub-btn-primary" id="btn-auth-submit">Sign In</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- My Projects Manager -->
+  <div class="submit-modal-backdrop" id="my-projects-backdrop">
+    <div class="submit-modal my-projects-modal" role="dialog" aria-modal="true" aria-labelledby="my-projects-heading">
+      <div class="submit-modal-header">
+        <div>
+          <span class="sub-badge">YOUR PINS</span>
+          <h2 id="my-projects-heading" class="sub-title">My Projects</h2>
+          <p class="sub-desc" id="my-projects-desc">Edit or remove any project you have launched.</p>
+        </div>
+        <button class="submit-close-btn" id="btn-close-my-projects" aria-label="Close my projects">✕</button>
+      </div>
+      <div class="my-projects-list" id="my-projects-list"></div>
+      <div class="submit-form-actions">
+        <button type="button" class="sub-btn-primary" id="btn-new-project-from-list">🚀 Launch a New Pin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Informational Modal (How It Works / Spotlight Tiers) -->
+  <div class="submit-modal-backdrop" id="info-modal-backdrop">
+    <div class="submit-modal info-modal" role="dialog" aria-modal="true" aria-labelledby="info-heading">
+      <div class="submit-modal-header">
+        <div>
+          <span class="sub-badge" id="info-badge">HOW IT WORKS</span>
+          <h2 id="info-heading" class="sub-title">Three steps to the globe</h2>
+          <p class="sub-desc" id="info-desc"></p>
+        </div>
+        <button class="submit-close-btn" id="btn-close-info" aria-label="Close">✕</button>
+      </div>
+      <div class="info-body" id="info-body"></div>
+      <div class="submit-form-actions">
+        <button type="button" class="sub-btn-secondary" id="btn-info-dismiss">Close</button>
+        <button type="button" class="sub-btn-primary" id="btn-info-cta">🚀 Submit Your Project</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls HUD (Auto-rotate, Reset, Zoom) -->
+  <div class="controls-hud">
+    <button class="hud-btn active" id="btn-toggle-rotate" title="Toggle Auto-Rotation">⟳</button>
+    <button class="hud-btn" id="btn-reset-camera" title="Reset Orbit">⌂</button>
+    <button class="hud-btn" id="btn-zoom-in" title="Zoom In">+</button>
+    <button class="hud-btn" id="btn-zoom-out" title="Zoom Out">−</button>
+  </div>
+
+  <!-- Ephemeral Feedback Toast -->
+  <div class="toast-pill" id="toast-pill"></div>
+
+  <!-- Vite Modular Application Entry Point -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

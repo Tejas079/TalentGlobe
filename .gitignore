@@ -1,0 +1,24 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Production build output
+dist
+dist-ssr
+*.local
+
+# Environment variables (NEVER COMMIT)
+.env
+.env.local
+.env.*.local
+
+# Editor & System files
+.DS_Store
+Thumbs.db
+.sf
+.idea
+.vscode
+
+# Vercel
+.vercel
