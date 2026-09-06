@@ -82,14 +82,24 @@ export function closeAdminApprovals() {
   }
 }
 
+export function syncAdminUI() {
+  const isAuth = isAdminAuthenticated();
+  const navItem = document.getElementById('nav-item-approvals');
+  const menuBtn = document.getElementById('menu-approvals');
+  if (navItem) navItem.style.display = isAuth ? 'inline-block' : 'none';
+  if (menuBtn) menuBtn.style.display = isAuth ? 'flex' : 'none';
+}
+
 function promptAdminPasscode() {
-  const entered = prompt('🔐 Admin Passcode required to review & approve claims (Default: admin777):');
-  if (entered === 'admin777' || entered === 'admin' || entered === 'tejas') {
+  const entered = prompt('🔐 Enter Admin Passcode:');
+  if (!entered) return;
+  if (entered.trim() === 'admin777' || entered.trim() === 'tejas') {
     localStorage.setItem(ADMIN_AUTH_KEY, 'true');
     showToast('✓ Admin verified!', 2500);
+    syncAdminUI();
     openAdminApprovals();
-  } else if (entered !== null) {
-    showToast('✕ Incorrect passcode.', 3000);
+  } else {
+    showToast('✕ Access denied.', 3000);
   }
 }
 
@@ -227,5 +237,22 @@ export function initAdminApprovals() {
   const menuBtn = document.getElementById('menu-approvals');
   if (menuBtn) menuBtn.addEventListener('click', openAdminApprovals);
 
+  // Secret shortcut: Cmd+Shift+A or Ctrl+Shift+A opens Admin Console
+  window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+      e.preventDefault();
+      openAdminApprovals();
+    }
+  });
+
+  // URL Hash trigger: visiting #admin opens Admin Console
+  if (window.location.hash === '#admin') {
+    setTimeout(() => openAdminApprovals(), 500);
+  }
+  window.addEventListener('hashchange', () => {
+    if (window.location.hash === '#admin') openAdminApprovals();
+  });
+
+  syncAdminUI();
   updateBadgeCounter();
 }

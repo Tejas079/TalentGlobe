@@ -19,7 +19,7 @@ import { initAuthModal } from './ui/auth-modal.js';
 import { initInfoModal } from './ui/info-modal.js';
 import { initMyProjects, render as renderMyProjects } from './ui/my-projects.js';
 import { initClaimModal, openClaimModal } from './ui/claim-modal.js';
-import { initAdminApprovals } from './ui/admin-approvals.js';
+import { initAdminApprovals, syncAdminUI } from './ui/admin-approvals.js';
 import { celestialSystem } from './three/celestial-system.js';
 import { flyCameraToCelestial, trackCelestialMesh, clearCelestialTracking, updateCelestialCameraTracking } from './three/camera-flight.js';
 import { initCelestialUI, openCelestialCard, closeCelestialCard, updateCelestialModalPosition } from './ui/celestial-modal.js';
@@ -108,6 +108,7 @@ initAuthModal({
     if (!bootComplete) return;
     renderMyProjects();
     refreshFilters();
+    syncAdminUI();
     // A different account sees a different set of cloud projects.
     loadSavedCommunityProjects();
   }
